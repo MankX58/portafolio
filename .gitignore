@@ -1,0 +1,68 @@
+# Dependencies
+node_modules/
+bower_components/
+
+# Build output
+dist/
+build/
+out/
+.next/
+.nuxt/
+.output/
+.vercel/
+.netlify/
+coverage/
+*.tsbuildinfo
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+
+# Logs and runtime files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Caches and temporary files
+.cache/
+.parcel-cache/
+.turbo/
+.eslintcache
+.stylelintcache
+.temp/
+tmp/
+temp/
+
+# Test and tooling output
+playwright-report/
+test-results/
+.nyc_output/
+
+# Local editor and operating-system files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Claude files and local configuration
+.claude/
+.claude-*
+CLAUDE.md
+claude.md
+.mcp.json
+

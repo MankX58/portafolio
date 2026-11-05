@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Paleta: papel cálido, tinta y un solo acento (naranja señal). */
+:root {
+  --paper: #f4f1ea;
+  --surface: #fbf9f4;
+  --line: #dcd6c8;
+  --ink: #16150f;
+  --ink-soft: #4a473d;
+  --ink-faint: #6f6b5f;
+  --accent: #e8471a;
+  --accent-ink: #fff8f2;
+  --visit: #f2c9b4;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #12110e;
+    --surface: #1b1a16;
+    --line: #2f2d26;
+    --ink: #f1ede3;
+    --ink-soft: #bdb7a8;
+    --ink-faint: #8e8878;
+    --accent: #ff6a3d;
+    --accent-ink: #1a0d06;
+    --visit: #5a2e1d;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #12110e;
+  --surface: #1b1a16;
+  --line: #2f2d26;
+  --ink: #f1ede3;
+  --ink-soft: #bdb7a8;
+  --ink-faint: #8e8878;
+  --accent: #ff6a3d;
+  --accent-ink: #1a0d06;
+  --visit: #5a2e1d;
+}
+
+@theme {
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-visit: var(--visit);
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Grano sutil para que el papel no se sienta plano. */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
