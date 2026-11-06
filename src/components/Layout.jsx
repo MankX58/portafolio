@@ -3,11 +3,13 @@ import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { me, projects } from "../content";
 import { usePrefs } from "../prefs";
+import { List, MagnifyingGlass, Moon, Sun, X } from "@phosphor-icons/react";
 import { Arrow, useCopyEmail } from "./ui";
 
 const sections = [
   ["proyectos", { es: "Proyectos", en: "Work" }],
   ["habilidades", { es: "Habilidades", en: "Skills" }],
+  ["sobre-mi", { es: "Sobre mí", en: "About" }],
   ["trayectoria", { es: "Trayectoria", en: "Journey" }],
   ["contacto", { es: "Contacto", en: "Contact" }],
 ];
@@ -72,12 +74,12 @@ function Header({ openPalette }) {
     <header className="sticky top-0 z-50 border-b border-line/70 bg-paper/80 backdrop-blur-md">
       <motion.div className="absolute inset-x-0 bottom-[-1px] h-px origin-left bg-accent" style={{ scaleX: progress }} />
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link to="/" className="group flex items-center gap-2.5 font-display font-semibold tracking-tight">
+        <Link to="/" className="group flex items-center gap-2.5 font-wide font-bold tracking-tight">
           <Mark />
           <span>{me.short}</span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-1 text-sm" aria-label="Principal">
+        <nav className="hidden items-center gap-1 text-sm lg:flex" aria-label="Principal">
           {sections.map(([id, label]) => (
             <Link key={id} to={`/#${id}`} className="rounded-full px-3 py-1.5 text-ink-soft hover:text-ink hover:bg-surface transition-colors">
               {t(label)}
@@ -86,28 +88,22 @@ function Header({ openPalette }) {
         </nav>
 
         <div className="flex items-center gap-1.5">
-          <button onClick={openPalette} className="hidden lg:inline-flex items-center gap-2 rounded-full border border-line px-3 py-1.5 font-mono text-xs text-ink-faint hover:text-ink hover:border-ink transition-colors">
-            {t({ es: "Buscar", en: "Search" })} <kbd className="rounded border border-line px-1">Ctrl K</kbd>
+          <button onClick={openPalette} aria-label={t({ es: "Buscar", en: "Search" })} className="hidden items-center gap-2 rounded-full px-3 py-1.5 text-xs text-ink-faint ring-1 ring-line transition-colors hover:text-ink hover:ring-ink lg:inline-flex">
+            <MagnifyingGlass className="size-3.5" aria-hidden /> <kbd className="font-mono">Ctrl K</kbd>
           </button>
           <IconBtn onClick={toggleLang} label={t({ es: "Switch to English", en: "Cambiar a español" })}>
             <span className="font-mono text-xs font-medium">{lang === "es" ? "EN" : "ES"}</span>
           </IconBtn>
           <IconBtn onClick={toggleTheme} label={t({ es: "Cambiar tema", en: "Toggle theme" })}>
-            <motion.svg key={theme} initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-              {theme === "dark" ? (
-                <><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></>
-              ) : (
-                <path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10Z" />
-              )}
-            </motion.svg>
+            <motion.span key={theme} initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} className="grid">
+              {theme === "dark" ? <Sun className="size-[18px]" aria-hidden /> : <Moon className="size-[18px]" aria-hidden />}
+            </motion.span>
           </IconBtn>
-          <a href={me.cv[lang]} download className="hidden sm:inline-flex rounded-full bg-ink px-4 py-1.5 text-sm font-medium text-paper hover:bg-accent hover:text-accent-ink transition-colors">
-            CV
+          <a href={me.cv[lang]} download className="hidden whitespace-nowrap rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper transition-colors hover:bg-accent hover:text-accent-ink sm:inline-flex">
+            {t({ es: "Descargar CV", en: "Download CV" })}
           </a>
-          <IconBtn onClick={() => setOpen((o) => !o)} label="Menu" className="md:hidden" aria-expanded={open}>
-            <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
-              {open ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M4 8h16M4 16h16" />}
-            </svg>
+          <IconBtn onClick={() => setOpen((o) => !o)} label="Menu" className="lg:hidden" aria-expanded={open}>
+            {open ? <X className="size-[18px]" aria-hidden /> : <List className="size-[18px]" aria-hidden />}
           </IconBtn>
         </div>
       </div>
@@ -115,10 +111,10 @@ function Header({ openPalette }) {
       <AnimatePresence>
         {open && (
           <motion.nav initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-            className="md:hidden overflow-hidden border-t border-line bg-paper" aria-label="Móvil">
+            className="overflow-hidden border-t border-line bg-paper lg:hidden" aria-label="Móvil">
             <div className="flex flex-col px-4 py-3">
               {sections.map(([id, label]) => (
-                <Link key={id} to={`/#${id}`} onClick={() => setOpen(false)} className="py-3 font-display text-2xl border-b border-line last:border-0">
+                <Link key={id} to={`/#${id}`} onClick={() => setOpen(false)} className="border-b border-line py-3 font-wide text-2xl font-bold last:border-0">
                   {t(label)}
                 </Link>
               ))}
@@ -158,7 +154,7 @@ function Footer() {
     <footer className="border-t border-line">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6 text-sm text-ink-faint">
         <p>
-          © {new Date().getFullYear()} {me.name} · {t({ es: "Hecho a mano con React, Tailwind y React Router.", en: "Hand-built with React, Tailwind and React Router." })}
+          © {new Date().getFullYear()} {me.name} · {t({ es: "Diseñado y programado por mí con React, Tailwind y React Router.", en: "Designed and coded by me with React, Tailwind and React Router." })}
         </p>
         <div className="flex gap-4">
           <a className="hover:text-ink" href={me.github} target="_blank" rel="noreferrer">GitHub</a>
@@ -170,7 +166,7 @@ function Footer() {
   );
 }
 
-// Paleta de comandos (Ctrl/⌘ K): navegar, copiar correo, descargar CV, cambiar idioma o tema.
+// Paleta de comandos (Ctrl/Cmd K): navegar, copiar correo, descargar CV, cambiar idioma o tema.
 function Palette({ close }) {
   const { t, lang, toggleLang, toggleTheme } = usePrefs();
   const navigate = useNavigate();
@@ -213,7 +209,7 @@ function Palette({ close }) {
         initial={{ y: -12, scale: 0.98 }} animate={{ y: 0, scale: 1 }} exit={{ y: -12, scale: 0.98 }}
         onMouseDown={(e) => e.stopPropagation()} onKeyDown={onKey}>
         <input ref={input} value={q} onChange={(e) => { setQ(e.target.value); setSel(0); }}
-          placeholder={t({ es: "Ir a un proyecto, copiar correo, descargar CV…", en: "Jump to a project, copy email, download CV…" })}
+          placeholder={t({ es: "Ir a un proyecto, copiar correo, descargar CV", en: "Jump to a project, copy email, download CV" })}
           className="w-full border-b border-line bg-transparent px-5 py-4 outline-none placeholder:text-ink-faint" />
         <ul className="max-h-80 overflow-y-auto p-2" role="listbox">
           {list.map((a, i) => (

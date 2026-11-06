@@ -1,34 +1,35 @@
 import { useEffect, useRef, useState } from "react";
 import { animate, motion, useInView } from "motion/react";
 import { Link } from "react-router";
+import { ArrowRight, ArrowUpRight, Check, Copy } from "@phosphor-icons/react";
 import { me } from "../content";
 import { usePrefs } from "../prefs";
+
+const ease = [0.16, 1, 0.3, 1];
 
 export function Reveal({ children, delay = 0, className = "", as = "div" }) {
   const M = motion[as];
   return (
     <M className={className} initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }} transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}>
+      viewport={{ once: true, amount: 0.15 }} transition={{ duration: 0.7, delay, ease }}>
       {children}
     </M>
   );
 }
 
-export function SectionHead({ index, title, kicker }) {
+// Titular de sección: sin etiquetas numeradas, solo el mensaje.
+export function SectionHead({ title, kicker, className = "" }) {
   return (
-    <Reveal className="mb-10 sm:mb-14 grid gap-3 sm:grid-cols-[8rem_1fr] items-baseline">
-      <span className="label">{index}</span>
-      <div>
-        <h2 className="font-display text-4xl sm:text-5xl font-semibold tracking-tight text-balance">{title}</h2>
-        {kicker && <p className="mt-3 max-w-2xl text-ink-soft text-pretty">{kicker}</p>}
-      </div>
+    <Reveal className={`mb-10 max-w-3xl sm:mb-14 ${className}`}>
+      <h2 className="font-wide text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-balance sm:text-5xl">{title}</h2>
+      {kicker && <p className="mt-4 max-w-[60ch] text-lg leading-relaxed text-ink-soft text-pretty">{kicker}</p>}
     </Reveal>
   );
 }
 
 export function Chip({ children }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-line px-2.5 py-0.5 font-mono text-[0.7rem] text-ink-soft">
+    <span className="inline-flex items-center rounded-full bg-paper px-2.5 py-1 font-mono text-[0.7rem] text-ink-soft ring-1 ring-line">
       {children}
     </span>
   );
@@ -36,20 +37,21 @@ export function Chip({ children }) {
 
 const btn = {
   primary: "bg-ink text-paper hover:bg-accent hover:text-accent-ink",
-  ghost: "border border-line text-ink hover:border-ink",
+  accent: "bg-accent text-accent-ink hover:bg-ink hover:text-paper",
+  ghost: "ring-1 ring-line text-ink hover:ring-ink",
 };
 
 export function Button({ to, href, variant = "primary", children, className = "", ...rest }) {
-  const cls = `group inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-colors duration-200 ${btn[variant]} ${className}`;
+  const cls = `group inline-flex items-center gap-2 whitespace-nowrap rounded-full px-5 py-3 text-sm font-semibold transition-[color,background-color,box-shadow,transform] duration-300 active:scale-[0.98] ${btn[variant]} ${className}`;
   if (to) return <Link to={to} className={cls} {...rest}>{children}</Link>;
   return <a href={href} className={cls} {...rest}>{children}</a>;
 }
 
 export function Arrow({ className = "", up = false }) {
+  const Icon = up ? ArrowUpRight : ArrowRight;
   return (
-    <svg viewBox="0 0 16 16" className={`size-3.5 transition-transform duration-200 ${up ? "group-hover:-translate-y-0.5 group-hover:translate-x-0.5" : "group-hover:translate-x-1"} ${className}`} fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-      {up ? <path d="M5 11 11 5M6 5h5v5" /> : <path d="M3 8h10M9 4l4 4-4 4" />}
-    </svg>
+    <Icon weight="bold" aria-hidden
+      className={`size-4 transition-transform duration-300 ${up ? "group-hover:-translate-y-0.5 group-hover:translate-x-0.5" : "group-hover:translate-x-1"} ${className}`} />
   );
 }
 
@@ -83,23 +85,21 @@ export function useCopyEmail() {
 export function CopyEmail({ className = "" }) {
   const { t } = usePrefs();
   const [copied, copy] = useCopyEmail();
+  const Icon = copied ? Check : Copy;
   return (
-    <button onClick={copy} className={`group inline-flex items-center gap-2 font-mono text-sm text-ink-soft hover:text-ink transition-colors ${className}`}>
-      <span className="underline decoration-line underline-offset-4 group-hover:decoration-accent">{me.email}</span>
-      <span className="relative inline-block min-w-16 text-left text-xs text-ink-faint" aria-live="polite">
-        {copied ? <span className="text-accent">{t({ es: "¡copiado!", en: "copied!" })}</span> : t({ es: "copiar", en: "copy" })}
-      </span>
+    <button onClick={copy} className={`group inline-flex items-center gap-2 font-mono text-sm transition-colors ${className}`}>
+      <span className="underline decoration-current/30 underline-offset-4 group-hover:decoration-current">{me.email}</span>
+      <Icon className="size-4 opacity-70" aria-hidden />
+      <span className="sr-only" aria-live="polite">{copied ? t({ es: "Correo copiado", en: "Email copied" }) : ""}</span>
     </button>
   );
 }
 
+// Captura real de un proyecto, sin marco de navegador falso.
 export function Shot({ src, alt, className = "" }) {
   return (
-    <div className={`overflow-hidden rounded-xl border border-line bg-paper ${className}`}>
-      <div className="flex gap-1.5 border-b border-line px-3 py-2" aria-hidden>
-        {[0, 1, 2].map((i) => <span key={i} className="size-2 rounded-full bg-line" />)}
-      </div>
-      <img src={src} alt={alt} loading="lazy" className="block w-full aspect-[16/10] object-cover object-top" />
+    <div className={`overflow-hidden rounded-xl bg-paper ring-1 ring-line ${className}`}>
+      <img src={src} alt={alt} loading="lazy" className="block aspect-[16/10] w-full object-cover object-top" />
     </div>
   );
 }

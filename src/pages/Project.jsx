@@ -14,8 +14,8 @@ export default function Project() {
   const p = projects[i];
 
   useEffect(() => {
-    if (p) document.title = `${p.name} · ${me.short}`;
-    return () => void (document.title = `${me.short} · Front-end Developer`);
+    if (p) document.title = `${p.name} | ${me.short}`;
+    return () => void (document.title = `${me.short} | Front-end Developer`);
   }, [p]);
 
   if (!p) return <NotFound />;
@@ -29,9 +29,9 @@ export default function Project() {
 
       <header className="mt-10 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-end">
         <div>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="label">{p.year} · {t(p.kind)}</motion.p>
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm font-semibold text-accent">{t(p.kind)}, {p.year}</motion.p>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-3 font-display text-[clamp(3rem,9vw,6.5rem)] font-semibold leading-[0.9] tracking-[-0.04em]">
+            className="mt-3 font-wide text-[clamp(2.8rem,8vw,6rem)] font-extrabold leading-[0.95] tracking-[-0.045em]">
             {p.name}
           </motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
@@ -53,7 +53,7 @@ export default function Project() {
         <dl className="mt-10 grid grid-cols-2 gap-6 border-y border-line py-8 sm:grid-cols-4">
           {p.metrics.map((m, k) => (
             <Reveal key={k} delay={k * 0.06}>
-              <dt className="font-display text-4xl font-semibold tracking-tight">{m.value}</dt>
+              <dt className="font-wide text-4xl font-extrabold tracking-[-0.03em]">{m.value}</dt>
               <dd className="mt-1 text-sm text-ink-soft">{t(m.label)}</dd>
             </Reveal>
           ))}
@@ -62,7 +62,7 @@ export default function Project() {
 
       <div className="mt-16 grid gap-14 lg:grid-cols-[14rem_1fr]">
         <aside className="lg:sticky lg:top-24 lg:self-start">
-          <p className="label mb-3">Stack</p>
+          <p className="mb-3 text-sm font-bold">{t({ es: "Tecnologías", en: "Tech stack" })}</p>
           <div className="flex flex-wrap gap-1.5">{p.stack.map((s) => <Chip key={s}>{s}</Chip>)}</div>
         </aside>
 
@@ -77,8 +77,8 @@ export default function Project() {
             <Block title={t({ es: "Lo que construí", en: "What I built" })}>
               <ul className="space-y-3">
                 {t(p.built).map((b) => (
-                  <li key={b} className="flex gap-3 leading-relaxed text-ink-soft">
-                    <span className="mt-2.5 size-1.5 shrink-0 rounded-full bg-accent" />{b}
+                  <li key={b} className="flex gap-4 text-lg leading-relaxed text-ink-soft">
+                    <span className="mt-[0.7em] h-[3px] w-4 shrink-0 rounded-full bg-accent" aria-hidden />{b}
                   </li>
                 ))}
               </ul>
@@ -87,14 +87,16 @@ export default function Project() {
 
           {p.decisions && (
             <Block title={t({ es: "Decisiones técnicas", en: "Technical decisions" })}>
-              <div className="grid gap-4">
+              <ol className="relative ml-2">
+                <span className="absolute left-0 top-2 bottom-2 w-1 -translate-x-1/2 rounded-full bg-accent" aria-hidden />
                 {t(p.decisions).map(([title, why], k) => (
-                  <Reveal key={title} delay={k * 0.05} className="rounded-2xl border border-line bg-surface p-5">
-                    <p className="font-medium">{title}</p>
-                    <p className="mt-1.5 text-ink-soft leading-relaxed">{why}</p>
+                  <Reveal as="li" key={title} delay={k * 0.05} className="relative pb-8 pl-8 last:pb-0">
+                    <span className="absolute left-0 top-1.5 size-4 -translate-x-1/2 rounded-full border-[3px] border-accent bg-paper" aria-hidden />
+                    <p className="text-lg font-bold">{title}</p>
+                    <p className="mt-1.5 leading-relaxed text-ink-soft">{why}</p>
                   </Reveal>
                 ))}
-              </div>
+              </ol>
             </Block>
           )}
 
@@ -110,10 +112,10 @@ export default function Project() {
 
       <Link to={`/proyectos/${next.slug}`} className="group mt-24 flex items-end justify-between gap-6 border-t border-line pt-8">
         <div>
-          <p className="label">{t({ es: "Siguiente proyecto", en: "Next project" })}</p>
-          <p className="mt-2 font-display text-4xl font-semibold tracking-tight transition-colors group-hover:text-accent sm:text-6xl">{next.name}</p>
+          <p className="text-sm font-semibold text-ink-faint">{t({ es: "Siguiente proyecto", en: "Next project" })}</p>
+          <p className="mt-2 font-wide text-4xl font-extrabold tracking-[-0.04em] transition-colors group-hover:text-accent sm:text-6xl">{next.name}</p>
         </div>
-        <Arrow className="size-8 shrink-0 mb-2" />
+        <Arrow className="mb-2 size-8 shrink-0" />
       </Link>
     </article>
   );
@@ -122,7 +124,7 @@ export default function Project() {
 function Block({ title, children }) {
   return (
     <Reveal as="section">
-      <h2 className="mb-5 font-display text-3xl font-semibold tracking-tight">{title}</h2>
+      <h2 className="mb-6 font-wide text-3xl font-extrabold tracking-[-0.03em]">{title}</h2>
       {children}
     </Reveal>
   );

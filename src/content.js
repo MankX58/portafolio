@@ -8,26 +8,37 @@ export const me = {
   linkedin: "https://www.linkedin.com/in/manuel-gutierrez-villegas-80616a264",
   cv: { es: "/cv/CV-Manuel-Gutierrez-ES.pdf", en: "/cv/CV-Manuel-Gutierrez-EN.pdf" },
   role: { es: "Desarrollador Front-end", en: "Front-end Developer" },
-  location: { es: "Medellín, Colombia · UTC−5", en: "Medellín, Colombia · UTC−5" },
+  location: { es: "Medellín, Colombia (UTC-5)", en: "Medellín, Colombia (UTC-5)" },
   status: {
-    es: "Disponible para práctica o rol junior · remoto o híbrido",
-    en: "Open to internship or junior roles · remote or hybrid",
+    es: "Disponible para práctica o rol junior, remoto o híbrido",
+    en: "Open to internship or junior roles, remote or hybrid",
   },
   headline: {
-    es: ["Construyo interfaces", "que la gente", "sí usa."],
-    en: ["I build interfaces", "people actually", "use."],
+    es: ["Construyo software", "que la gente usa."],
+    en: ["I build software", "people actually use."],
   },
   intro: {
-    es: "Desarrollador front-end con React, Next.js y TypeScript, y estudiante de Ingeniería de Sistemas. Hoy mantengo una tienda en producción con pagos reales para un negocio de Medellín, y enseño programación como monitor voluntario en la Universidad de Medellín y antes en Code in Place de Stanford.",
-    en: "Front-end developer working with React, Next.js and TypeScript, and a Systems Engineering student. I currently maintain a production store with real payments for a business in Medellín, and I teach programming as a volunteer tutor at Universidad de Medellín, and before that in Stanford's Code in Place.",
+    es: "Front-end con React, Next.js y TypeScript. Mantengo una tienda en producción y enseño programación en la Universidad de Medellín.",
+    en: "Front-end developer with React, Next.js and TypeScript. I maintain a production store and teach programming at Universidad de Medellín.",
   },
+  about: {
+    es: [
+      "Empecé a programar en 2021 haciendo páginas para mí. Hoy estudio Ingeniería de Sistemas en la Universidad de Medellín, y casi todo lo que construyo nace de un problema que tengo cerca: el Excel de un negocio, mis notas del semestre, las calles que camino en la ciudad.",
+      "También enseño. Explicarle un ciclo for a alguien que lo ve por primera vez me obligó a entender de verdad lo que hago, y me dejó una costumbre: escribir código que otra persona pueda leer sin mí al lado.",
+    ],
+    en: [
+      "I started coding in 2021, building pages for myself. Today I study Systems Engineering at Universidad de Medellín, and almost everything I build starts with a problem close to me: a business's spreadsheet, my own grades, the streets I walk in the city.",
+      "I also teach. Explaining a for loop to someone seeing it for the first time forced me to truly understand what I do, and left me with a habit: writing code another person can read without me next to them.",
+    ],
+  },
+  offscreen: { es: "Fuera de la pantalla: taekwondo, gimnasio y pintura.", en: "Off screen: taekwondo, the gym and painting." },
 };
 
 export const facts = [
   { value: 2021, kind: "year", label: { es: "programando por mi cuenta", en: "coding on my own since" } },
   { value: 7, label: { es: "apps desplegadas con URL pública", en: "apps deployed with a public URL" } },
   { value: 1, label: { es: "tienda en producción con pagos reales", en: "production store with real payments" } },
-  { value: "B2", label: { es: "inglés · lectura técnica diaria", en: "English · daily technical reading" } },
+  { value: "B2", label: { es: "de inglés, leo documentación a diario", en: "English, I read docs daily" } },
 ];
 
 // featured: aparece grande en la portada. Todos tienen página propia en /proyectos/:slug.
@@ -37,7 +48,7 @@ export const projects = [
     featured: true,
     name: "Ésman Parfum",
     year: "2026",
-    kind: { es: "E-commerce en producción · negocio real", en: "Production e-commerce · real business" },
+    kind: { es: "E-commerce en producción, negocio real", en: "Production e-commerce, real business" },
     tagline: {
       es: "Tienda de perfumes con pagos en línea y un panel que reemplazó el Excel de contabilidad del dueño.",
       en: "Perfume store with online payments and an admin panel that replaced the owner's accounting spreadsheet.",
@@ -93,7 +104,7 @@ export const projects = [
     featured: true,
     name: "Mi semestre",
     year: "2026",
-    kind: { es: "Producto propio · lo uso a diario", en: "My own product · I use it daily" },
+    kind: { es: "Producto propio, lo uso a diario", en: "My own product, I use it daily" },
     tagline: {
       es: "Horario, notas, exámenes y faltas en un solo lugar. Te dice cuánto necesitas en el final y cuántas faltas te quedan antes de perder la materia.",
       en: "Schedule, grades, exams and absences in one place. It tells you what you need on the final and how many absences you have left before failing the course.",
@@ -140,7 +151,7 @@ export const projects = [
       ],
       en: [
         ["University rules live in pure functions", "neededOnFinal() and absenceLimit() (limit = ⌊hours × 0.20 / 2⌋) sit in a single file. If the university changes a rule, one line changes."],
-        ["Autosave with a 700 ms debounce", "Every change saves itself, with no save button, but without one request per keystroke. The “Synced” indicator always shows the current state."],
+        ["Autosave with a 700 ms debounce", "Every change saves itself, with no save button, but without one request per keystroke. The 'Synced' indicator always shows the current state."],
         ["Nobody lost their data moving to the cloud", "The first version stored data in localStorage. On first sign-in, the app migrates that data to Postgres and marks the migration as done."],
         ["One row per user with JSONB columns", "Schedule, grades, exams and absences load in a single query. For data that's always loaded together, that's simpler than six joined tables."],
         ["The session is checked on the server", "Server Actions read the Better Auth session before touching the database: each user can only read and write their own data."],
@@ -153,7 +164,7 @@ export const projects = [
     featured: true,
     name: "UdeMaps",
     year: "2026",
-    kind: { es: "Algoritmos · proyecto final de ADA", en: "Algorithms · final project" },
+    kind: { es: "Algoritmos, proyecto final de ADA", en: "Algorithms, final project" },
     tagline: {
       es: "Rutas en Medellín que no solo buscan la más corta, sino la más segura. Dijkstra y A* escritos desde cero sobre 68.750 calles.",
       en: "Routes across Medellín that look for the safest path, not just the shortest. Dijkstra and A* written from scratch over 68,750 streets.",
@@ -206,12 +217,13 @@ export const projects = [
     featured: true,
     name: "Vitania",
     year: "2026",
-    kind: { es: "Full-stack · bienestar para adultos mayores", en: "Full-stack · wellbeing for older adults" },
+    kind: { es: "Full-stack, bienestar para adultos mayores", en: "Full-stack, wellbeing for older adults" },
     tagline: {
       es: "Clases, citas que no se olvidan y comida adaptada a cada condición médica. Con API propia y recordatorios push.",
       en: "Classes, appointments people don't forget and meals adapted to each medical condition. With its own API and push reminders.",
     },
     image: "/shots/vitania.png",
+    thumb: "/shots/vitania-thumb.jpg",
     live: "https://vitania-theta.vercel.app",
     repo: "https://github.com/MankX58/Vitania",
     stack: ["React 18", "Vite", "Express 5", "Neon Postgres", "Auth0 + jose (JWT)", "Web Push (VAPID)", "Framer Motion"],
@@ -256,12 +268,13 @@ export const projects = [
     featured: true,
     name: "Chatbot IA",
     year: "2026",
-    kind: { es: "IA · reto académico Universidad de Medellín", en: "AI · Universidad de Medellín challenge" },
+    kind: { es: "IA, reto académico Universidad de Medellín", en: "AI, Universidad de Medellín challenge" },
     tagline: {
       es: "Soporte tecnológico para la universidad: responde con IA, mide qué tan seguro está y, si no lo está, escala a un agente humano con un ticket.",
       en: "IT support for the university: it answers with AI, measures how confident it is and, when it isn't, escalates to a human agent with a ticket.",
     },
     image: "/shots/chatbot.png",
+    thumb: "/shots/chatbot-thumb.jpg",
     live: "https://chatbot-ia-blond.vercel.app",
     repo: "https://github.com/MankX58/Chatbot-IA",
     stack: ["React 19", "Vite", "Vercel Functions", "DeepSeek API", "PostgreSQL", "Auth0"],
@@ -347,7 +360,7 @@ export const projects = [
         ["Diseñado para el mostrador", "Pasos numerados, un solo botón principal por pantalla y ayuda visible: nadie debería adivinar con una fila esperando."],
       ],
       en: [
-        ["Revert, don't delete", "A refund moves to a “reverted” state with its date instead of being deleted: there's always a trail of what happened."],
+        ["Revert, don't delete", "A refund moves to a 'reverted' state with its date instead of being deleted: there's always a trail of what happened."],
         ["Designed for the counter", "Numbered steps, one primary button per screen and visible help: nobody should have to guess with a line waiting."],
       ],
     },
@@ -383,7 +396,7 @@ export const projects = [
       en: [
         "Income and expense log with category and note, editable.",
         "Monthly balance and a doughnut chart with the spending breakdown.",
-        "Per-category budgets with a “glass” chart that fills up as you spend.",
+        "Per-category budgets with a 'glass' chart that fills up as you spend.",
         "Custom categories with color and icon.",
       ],
     },
@@ -437,9 +450,9 @@ export const timeline = [
     link: "/proyectos/esman-parfum",
   },
   {
-    when: "2026 —",
+    when: { es: "2026 - hoy", en: "2026 - now" },
     title: { es: "Monitor de programación (voluntario)", en: "Programming tutor (volunteer)" },
-    org: { es: "Universidad de Medellín · desde febrero de 2026", en: "Universidad de Medellín · since February 2026" },
+    org: { es: "Universidad de Medellín, desde febrero de 2026", en: "Universidad de Medellín, since February 2026" },
     body: {
       es: "Acompaño grupos de 3 a 10 estudiantes que están aprendiendo a programar en Python. Aquí tengo libertad para diseñar: preparo algunos talleres yo mismo, como uno de condicionales y otro de programación orientada a objetos en notebooks, con una versión para el estudiante y otra con las soluciones.",
       en: "I support groups of 3 to 10 students learning to program in Python. Here I have room to design: I prepare some workshops myself, such as one on conditionals and one on object-oriented programming in notebooks, with a student version and a solutions version.",
@@ -449,7 +462,7 @@ export const timeline = [
   {
     when: "2025",
     title: { es: "Monitor de programación (voluntario)", en: "Programming section leader (volunteer)" },
-    org: { es: "Code in Place · Stanford University × Universidad de los Andes · oct–nov 2025", en: "Code in Place · Stanford University × Universidad de los Andes · Oct–Nov 2025" },
+    org: { es: "Code in Place, Stanford University × Universidad de los Andes, oct-nov 2025", en: "Code in Place, Stanford University × Universidad de los Andes, Oct-Nov 2025" },
     body: {
       es: "Guié a un grupo de estudiantes aprendiendo Python con el currículo de Stanford, en la edición que certifica la Universidad de los Andes: sesiones semanales sobre condicionales, ciclos, funciones y estructuras de datos, revisión de código y caza de errores de lógica, adaptando cada explicación al nivel de la persona.",
       en: "Led a group of students learning Python on Stanford's curriculum, in the edition certified by Universidad de los Andes: weekly sessions on conditionals, loops, functions and data structures, code review and logic-bug hunting, adapting each explanation to the person's level.",
@@ -460,16 +473,16 @@ export const timeline = [
   {
     when: "2025",
     title: { es: "Asesor comercial / auxiliar operativo", en: "Sales associate / operations assistant" },
-    org: { es: "Baby Fresh · Medellín", en: "Baby Fresh · Medellín" },
+    org: { es: "Baby Fresh, Medellín", en: "Baby Fresh, Medellín" },
     body: {
       es: "Facturación y punto de venta en alta rotación. Me dejó algo que uso al programar: ver el software desde el lado de quien lo usa con prisa y con una fila esperando.",
       en: "Billing and point of sale in a high-traffic store. It taught me something I use when coding: seeing software from the side of someone using it in a hurry, with a line waiting.",
     },
   },
   {
-    when: "2024 —",
+    when: { es: "2024 - hoy", en: "2024 - now" },
     title: { es: "Ingeniería de Sistemas", en: "B.Sc. Systems Engineering" },
-    org: { es: "Universidad de Medellín · en curso", en: "Universidad de Medellín · in progress" },
+    org: { es: "Universidad de Medellín, en curso", en: "Universidad de Medellín, in progress" },
     body: {
       es: "Algoritmos, estructuras de datos, bases de datos y desarrollo de software.",
       en: "Algorithms, data structures, databases and software development.",
@@ -487,12 +500,12 @@ export const timeline = [
 ];
 
 export const certs = [
-  { name: "Code in Place · Enseñanza y Mentoría de Programación con Python (mentor, 24 h)", by: "Stanford × Universidad de los Andes", year: "2025", url: "https://wallet.xertify.co/certificates/CB45FD38A004?v=183ac637-3856-4528-b8d1-204da9913d21" },
-  { name: "Programación con JavaScript", by: "Meta · Coursera", year: "2024", url: "https://coursera.org/verify/OJ0115L9DI50" },
+  { name: "Code in Place, Enseñanza y Mentoría de Programación con Python (mentor, 24 h)", by: "Stanford × Universidad de los Andes", year: "2025", url: "https://wallet.xertify.co/certificates/CB45FD38A004?v=183ac637-3856-4528-b8d1-204da9913d21" },
+  { name: "Programación con JavaScript", by: "Meta, Coursera", year: "2024", url: "https://coursera.org/verify/OJ0115L9DI50" },
   { name: "AWS Well-Architected Foundations", by: "AWS Training & Certification", year: "2026" },
   { name: "Introducción al desarrollo web: HTML y CSS (1 y 2)", by: "Google", year: "2024" },
   { name: "JavaScript, Programación Básica y Tailwind CSS", by: "Platzi" },
-  { name: "Developing Interpersonal Skills", by: "IBM · Coursera", year: "2024", url: "https://coursera.org/verify/8T2B6MTJJMRP" },
+  { name: "Developing Interpersonal Skills", by: "IBM, Coursera", year: "2024", url: "https://coursera.org/verify/8T2B6MTJJMRP" },
   { name: "Gestión de datos en Excel con SQL básico (90 h)", by: "Cencala" },
   { name: "Habilidades blandas y comunicativas", by: "SENA" },
 ];

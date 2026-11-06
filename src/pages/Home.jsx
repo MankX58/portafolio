@@ -1,12 +1,15 @@
-import { useState } from "react";
-import { motion } from "motion/react";
+import { useRef, useState } from "react";
+import { motion, useScroll, useSpring } from "motion/react";
 import { Link } from "react-router";
+import { Graph } from "@phosphor-icons/react";
 import { certs, facts, me, principles, projects, skills, timeline } from "../content";
 import { usePrefs } from "../prefs";
 import RouteGraph from "../components/RouteGraph";
 import { Arrow, Button, Chip, CopyEmail, CountUp, Reveal, SectionHead, Shot } from "../components/ui";
 
 const bySlug = Object.fromEntries(projects.map((p) => [p.slug, p]));
+const wrap = "mx-auto max-w-6xl px-4 sm:px-6";
+const ease = [0.16, 1, 0.3, 1];
 
 export default function Home() {
   return (
@@ -15,63 +18,57 @@ export default function Home() {
       <Facts />
       <Work />
       <Skills />
-      <Principles />
+      <About />
       <Journey />
       <Contact />
     </>
   );
 }
 
-const wrap = "mx-auto max-w-6xl px-4 sm:px-6";
-
 function Hero() {
   const { t, lang } = usePrefs();
   const lines = t(me.headline);
   return (
-    <section className={`${wrap} grid gap-12 pt-12 pb-16 sm:pt-20 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-16`}>
+    <section className={`${wrap} grid gap-12 pt-10 pb-20 sm:pt-16 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-12 lg:pt-20`}>
       <div>
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-          className="mb-8 flex items-center gap-3">
-          <img src="/manuel.jpg" alt={me.name} width="56" height="56"
-            className="size-14 rounded-2xl object-cover object-[50%_30%] ring-1 ring-line" />
-          <div>
-            <p className="font-medium">{me.name}</p>
-            <p className="text-sm text-ink-soft">{t(me.role)} · {t(me.location)}</p>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }}
+          className="flex items-center gap-4">
+          <img src="/manuel.jpg" alt={me.name} width="64" height="64"
+            className="size-16 rounded-2xl object-cover object-[50%_28%] ring-1 ring-line" />
+          <div className="text-sm leading-snug">
+            <p className="font-semibold">{me.name}</p>
+            <p className="text-ink-soft">{t(me.role)}, {t(me.location)}</p>
+            <p className="mt-1 inline-flex items-center gap-2 text-ink-soft">
+              <span className="relative flex size-2" aria-hidden>
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-50" />
+                <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+              </span>
+              {t(me.status)}
+            </p>
           </div>
         </motion.div>
 
-        <h1 key={lang} className="font-display text-[clamp(2.75rem,8vw,5.5rem)] font-semibold leading-[0.95] tracking-[-0.035em]">
+        <h1 key={lang} className="mt-10 font-wide text-[clamp(2.4rem,4.4vw,3.9rem)] font-extrabold leading-[1] tracking-[-0.04em]">
           {lines.map((line, i) => (
-            <span key={line} className="block overflow-hidden pb-1">
+            <span key={line} className="block overflow-hidden pb-[0.08em] lg:whitespace-nowrap">
               <motion.span className={`block ${i === lines.length - 1 ? "text-accent" : ""}`}
-                initial={{ y: "105%" }} animate={{ y: 0 }} transition={{ duration: 0.8, delay: 0.1 + i * 0.09, ease: [0.22, 1, 0.36, 1] }}>
+                initial={{ y: "105%" }} animate={{ y: 0 }} transition={{ duration: 0.9, delay: 0.1 + i * 0.1, ease }}>
                 {line}
               </motion.span>
             </span>
           ))}
         </h1>
 
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5, duration: 0.6 }}>
-          <p className="mt-7 max-w-xl text-lg leading-relaxed text-ink-soft text-pretty">{t(me.intro)}</p>
-
-          <p className="mt-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-sm">
-            <span className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-60" />
-              <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
-            </span>
-            {t(me.status)}
-          </p>
-
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.7, ease }}>
+          <p className="mt-6 max-w-[46ch] text-lg leading-relaxed text-ink-soft text-pretty">{t(me.intro)}</p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Button to="/#proyectos">{t({ es: "Ver proyectos", en: "See my work" })} <Arrow /></Button>
             <Button href={me.cv[lang]} variant="ghost" download>{t({ es: "Descargar CV", en: "Download CV" })}</Button>
           </div>
-          <CopyEmail className="mt-5" />
         </motion.div>
       </div>
 
-      <motion.div initial={{ opacity: 0, y: 30, rotate: 1.5 }} animate={{ opacity: 1, y: 0, rotate: 0 }}
-        transition={{ delay: 0.35, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}>
+      <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.9, ease }}>
         <RouteGraph />
       </motion.div>
     </section>
@@ -82,19 +79,17 @@ function Facts() {
   const { t } = usePrefs();
   return (
     <section className="border-y border-line bg-surface">
-      <div className={`${wrap} py-8`}>
-        <p className="label mb-5">{t({ es: "Lo esencial en 30 segundos", en: "The essentials in 30 seconds" })}</p>
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-6 md:grid-cols-4">
-          {facts.map((f, i) => (
-            <Reveal key={i} delay={i * 0.06}>
-              <dt className="font-display text-4xl font-semibold tracking-tight sm:text-5xl">
-                <CountUp value={f.value} />
-              </dt>
-              <dd className="mt-1 text-sm text-ink-soft">{t(f.label)}</dd>
-            </Reveal>
-          ))}
-        </dl>
-      </div>
+      <dl className={`${wrap} grid grid-cols-2 md:grid-cols-4`}>
+        {facts.map((f, i) => (
+          <Reveal key={i} delay={i * 0.06}
+            className={`py-8 pr-4 md:px-6 md:first:pl-0 ${i % 2 ? "pl-4 md:pl-6" : ""} ${i > 0 ? "md:border-l md:border-line" : ""} ${i > 1 ? "border-t border-line md:border-t-0" : ""}`}>
+            <dt className="font-wide text-4xl font-extrabold tracking-[-0.03em] sm:text-5xl">
+              <CountUp value={f.value} />
+            </dt>
+            <dd className="mt-2 text-sm text-ink-soft">{t(f.label)}</dd>
+          </Reveal>
+        ))}
+      </dl>
     </section>
   );
 }
@@ -103,7 +98,7 @@ function ExtLinks({ p, className = "" }) {
   const { t } = usePrefs();
   return (
     <div className={`relative z-10 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm ${className}`}>
-      <a href={p.live} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-1.5 font-medium hover:text-accent">
+      <a href={p.live} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-1.5 font-semibold hover:text-accent">
         {t({ es: "Ver en vivo", en: "Live site" })} <Arrow up />
       </a>
       <a href={p.repo} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-1.5 text-ink-soft hover:text-ink">
@@ -113,66 +108,114 @@ function ExtLinks({ p, className = "" }) {
   );
 }
 
-function Visual({ p }) {
-  if (p.image) return <Shot src={p.image} alt={`${p.name}`} className="transition-transform duration-500 group-hover:-translate-y-1" />;
+function CaseLink({ p, children, className = "" }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-line bg-paper p-4 transition-transform duration-500 group-hover:-translate-y-1">
-      <RouteGraph mini />
-    </div>
+    <Link to={`/proyectos/${p.slug}`} className={`after:absolute after:inset-0 after:rounded-[inherit] ${className}`}>{children}</Link>
+  );
+}
+
+function BigCard({ p, label, flip = false }) {
+  const { t } = usePrefs();
+  return (
+    <Reveal>
+      <article className={`group relative grid gap-8 rounded-[20px] border border-line bg-surface p-5 transition-[border-color] duration-300 hover:border-ink-faint sm:p-8 lg:items-center ${flip ? "lg:grid-cols-[1.2fr_1fr]" : "lg:grid-cols-[1fr_1.2fr]"}`}>
+        <div className={flip ? "lg:order-2" : ""}>
+          <p className="text-sm font-semibold text-accent">{label}</p>
+          <h3 className="mt-2 font-wide text-4xl font-extrabold tracking-[-0.035em] sm:text-5xl">
+            <CaseLink p={p}>{p.name}</CaseLink>
+          </h3>
+          <p className="mt-1 text-sm text-ink-faint">{t(p.kind)}</p>
+          <p className="mt-5 max-w-[52ch] text-lg leading-relaxed text-ink-soft text-pretty">{t(p.tagline)}</p>
+          <dl className="mt-6 grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4">
+            {p.metrics.map((m) => (
+              <div key={m.value + m.label.es}>
+                <dt className="font-wide text-2xl font-bold tracking-tight">{m.value}</dt>
+                <dd className="mt-0.5 text-xs leading-snug text-ink-faint">{t(m.label)}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="mt-6 flex flex-wrap gap-1.5">{p.stack.slice(0, 6).map((s) => <Chip key={s}>{s}</Chip>)}</div>
+          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
+              {t({ es: "Leer caso de estudio", en: "Read case study" })} <Arrow />
+            </span>
+            <ExtLinks p={p} />
+          </div>
+        </div>
+        <div className="overflow-hidden rounded-xl">
+          <Shot src={p.image} alt={p.name} className="transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:scale-[1.02]" />
+        </div>
+      </article>
+    </Reveal>
   );
 }
 
 function Work() {
   const { t } = usePrefs();
-  const [lead, second, ...featured] = projects.filter((p) => p.featured);
+  const featured = projects.filter((p) => p.featured);
+  const [lead, second] = featured;
+  const udemaps = bySlug.udemaps;
+  const side = featured.filter((p) => ![lead, second, udemaps].includes(p));
   const rest = projects.filter((p) => !p.featured);
 
   return (
     <section id="proyectos" className={`${wrap} py-24 sm:py-32`}>
-      <SectionHead index="01" title={t({ es: "Proyectos", en: "Selected work" })}
+      <SectionHead title={t({ es: "Proyectos que alguien usa", en: "Projects someone uses" })}
         kicker={t({
-          es: "Cada uno tiene demo pública, código abierto y un caso de estudio: el problema, lo que construí y por qué lo hice así.",
-          en: "Each one has a public demo, open code and a case study: the problem, what I built and why I built it that way.",
+          es: "Todos tienen demo pública, código abierto y un caso de estudio con el problema, lo que construí y por qué.",
+          en: "All of them have a public demo, open code and a case study with the problem, what I built and why.",
         })} />
 
-      <BigCard p={lead} label={t({ es: "Proyecto principal", en: "Flagship project" })} />
-      <BigCard p={second} label={t({ es: "Segundo destacado", en: "Also featured" })} flip className="mt-6" />
+      <div className="grid gap-6">
+        <BigCard p={lead} label={t({ es: "En producción para un negocio real", en: "In production for a real business" })} />
+        <BigCard p={second} label={t({ es: "Mi producto: lo uso todos los días", en: "My own product: I use it daily" })} flip />
+      </div>
 
-      <div className="mt-6 grid gap-6 md:grid-cols-3">
-        {featured.map((p, i) => (
-          <Reveal key={p.slug} delay={i * 0.08} className="h-full">
-            <article className="group relative flex h-full flex-col rounded-3xl border border-line bg-surface p-5 transition-colors hover:border-ink-faint">
-              <Visual p={p} />
-              <p className="label mt-5">{p.year} · {t(p.kind)}</p>
-              <h3 className="mt-2 font-display text-2xl font-semibold tracking-tight">
-                <Link to={`/proyectos/${p.slug}`} className="after:absolute after:inset-0 after:rounded-3xl">{p.name}</Link>
-              </h3>
-              <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-soft">{t(p.tagline)}</p>
-              <div className="mt-4 flex flex-wrap gap-1.5">{p.stack.slice(0, 4).map((s) => <Chip key={s}>{s}</Chip>)}</div>
-              <ExtLinks p={p} className="mt-5 border-t border-line pt-4" />
-            </article>
-          </Reveal>
-        ))}
+      {/* Bento: UdeMaps alto con su mapa, los otros dos apilados. */}
+      <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_1fr]">
+        <Reveal className="h-full">
+          <article className="group relative flex h-full flex-col rounded-[20px] border border-line bg-surface p-5 transition-[border-color] duration-300 hover:border-ink-faint sm:p-8">
+            <div className="rounded-xl bg-paper p-3 ring-1 ring-line"><RouteGraph mini /></div>
+            <p className="mt-6 text-sm text-ink-faint">{t(udemaps.kind)}</p>
+            <h3 className="mt-1 font-wide text-3xl font-extrabold tracking-[-0.03em]"><CaseLink p={udemaps}>{udemaps.name}</CaseLink></h3>
+            <p className="mt-3 flex-1 leading-relaxed text-ink-soft">{t(udemaps.tagline)}</p>
+            <div className="mt-5 flex flex-wrap gap-1.5">{udemaps.stack.map((s) => <Chip key={s}>{s}</Chip>)}</div>
+            <ExtLinks p={udemaps} className="mt-6" />
+          </article>
+        </Reveal>
+        <div className="grid gap-6 lg:grid-rows-2">
+          {side.map((p, i) => (
+            <Reveal key={p.slug} delay={0.08 * (i + 1)} className="h-full">
+              <article className="group relative grid h-full gap-5 rounded-[20px] border border-line bg-surface p-5 transition-[border-color] duration-300 hover:border-ink-faint sm:grid-cols-[0.9fr_1fr] sm:items-center sm:p-6">
+                <div className="overflow-hidden rounded-xl">
+                  <Shot src={p.thumb ?? p.image} alt={p.name} className="transition-transform duration-700 group-hover:scale-[1.03]" />
+                </div>
+                <div>
+                  <p className="text-sm text-ink-faint">{t(p.kind)}</p>
+                  <h3 className="mt-1 font-wide text-2xl font-extrabold tracking-[-0.03em]"><CaseLink p={p}>{p.name}</CaseLink></h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{t(p.tagline)}</p>
+                  <ExtLinks p={p} className="mt-4" />
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
       </div>
 
       <Reveal className="mt-16">
-        <p className="label mb-4">{t({ es: "Más casos de estudio", en: "More case studies" })}</p>
-        <ul className="border-t border-line">
+        <h3 className="mb-2 font-wide text-xl font-bold">{t({ es: "Más casos de estudio", en: "More case studies" })}</h3>
+        <ul>
           {rest.map((p) => (
-            <li key={p.slug} className="group relative grid gap-2 border-b border-line py-5 sm:grid-cols-[12rem_1fr_auto] sm:items-center sm:gap-6">
-              <Link to={`/proyectos/${p.slug}`} className="font-display text-xl font-semibold after:absolute after:inset-0">
-                <span className="bg-gradient-to-r from-accent to-accent bg-[length:0%_2px] bg-left-bottom bg-no-repeat transition-[background-size] duration-300 group-hover:bg-[length:100%_2px]">
-                  {p.name}
-                </span>
-              </Link>
+            <li key={p.slug} className="group relative grid gap-2 border-b border-line py-6 sm:grid-cols-[14rem_1fr_auto] sm:items-center sm:gap-8">
+              <CaseLink p={p} className="font-wide text-2xl font-extrabold tracking-[-0.03em] transition-colors group-hover:text-accent">{p.name}</CaseLink>
               <div>
-                <p className="text-sm text-ink-soft">{t(p.tagline)}</p>
-                <p className="mt-1 font-mono text-xs text-ink-faint">{p.stack.join(" · ")}</p>
+                <p className="text-ink-soft">{t(p.tagline)}</p>
+                <p className="mt-1 font-mono text-xs text-ink-faint">{p.stack.join(", ")}</p>
               </div>
               <ExtLinks p={p} />
               {p.image && (
                 <img src={p.image} alt="" aria-hidden loading="lazy"
-                  className="pointer-events-none absolute right-48 top-1/2 hidden w-56 -translate-y-1/2 rotate-2 rounded-lg border border-line opacity-0 shadow-xl transition-all duration-300 group-hover:rotate-0 group-hover:opacity-100 lg:block" />
+                  className="pointer-events-none absolute right-52 top-1/2 hidden w-60 -translate-y-1/2 rotate-3 rounded-lg opacity-0 shadow-[0_20px_40px_-20px_rgb(20_20_30/0.45)] ring-1 ring-line transition-all duration-500 group-hover:rotate-0 group-hover:opacity-100 xl:block" />
               )}
             </li>
           ))}
@@ -182,153 +225,177 @@ function Work() {
   );
 }
 
-function BigCard({ p, label, flip = false, className = "" }) {
-  const { t } = usePrefs();
-  return (
-    <Reveal className={className}>
-      <article className={`group relative grid gap-8 rounded-3xl border border-line bg-surface p-5 sm:p-8 lg:items-center ${flip ? "lg:grid-cols-[1.25fr_1fr]" : "lg:grid-cols-[1fr_1.25fr]"}`}>
-        <div className={flip ? "lg:order-2" : ""}>
-          <p className="label text-accent!">{label} · {t(p.kind)}</p>
-          <h3 className="mt-3 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
-            <Link to={`/proyectos/${p.slug}`} className="after:absolute after:inset-0 after:rounded-3xl">{p.name}</Link>
-          </h3>
-          <p className="mt-4 text-lg text-ink-soft text-pretty">{t(p.tagline)}</p>
-          <dl className="mt-6 grid grid-cols-2 gap-3 border-y border-line py-4 sm:grid-cols-4">
-            {p.metrics.map((m) => (
-              <div key={m.value + m.label.es}>
-                <dt className="font-display text-2xl font-semibold">{m.value}</dt>
-                <dd className="text-xs text-ink-faint leading-tight">{t(m.label)}</dd>
-              </div>
-            ))}
-          </dl>
-          <div className="mt-5 flex flex-wrap gap-1.5">{p.stack.map((s) => <Chip key={s}>{s}</Chip>)}</div>
-          <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
-            <span className="inline-flex items-center gap-1.5 text-sm font-medium text-accent">
-              {t({ es: "Leer caso de estudio", en: "Read case study" })} <Arrow />
-            </span>
-            <ExtLinks p={p} />
-          </div>
-        </div>
-        <Visual p={p} />
-      </article>
-    </Reveal>
-  );
-}
-
+// Explorador: eliges una tecnología y se iluminan los proyectos donde se puede comprobar.
 function Skills() {
   const { t } = usePrefs();
+  const all = skills.flatMap((g) => g.items);
+  const [active, setActive] = useState(all[0][0]);
+  const refs = all.find(([name]) => name === active)[1];
+
   return (
     <section id="habilidades" className="border-y border-line bg-surface">
       <div className={`${wrap} py-24 sm:py-32`}>
-        <SectionHead index="02" title={t({ es: "Habilidades, con pruebas", en: "Skills, with receipts" })}
+        <SectionHead title={t({ es: "Habilidades, con pruebas", en: "Skills, with receipts" })}
           kicker={t({
-            es: "Sin barras de porcentaje. Cada tecnología apunta al proyecto donde puedes verla funcionando.",
-            en: "No percentage bars. Each technology points to the project where you can see it working.",
+            es: "Elige una tecnología y mira en qué proyectos la usé. Cada uno se puede abrir.",
+            en: "Pick a technology and see which projects use it. You can open each one.",
           })} />
-        <div className="grid gap-10 lg:grid-cols-3">
-          {skills.map((g, gi) => (
-            <Reveal key={gi} delay={gi * 0.08}>
-              <h3 className="label mb-3">{t(g.group)}</h3>
-              <ul className="divide-y divide-line border-y border-line">
-                {g.items.map(([name, refs]) => (
-                  <li key={name} className="py-3">
-                    <p className="font-medium">{name}</p>
-                    <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm">
-                      {refs.map((slug) => (
-                        <Link key={slug} to={`/proyectos/${slug}`} className="text-ink-faint hover:text-accent transition-colors">
-                          ↳ {bySlug[slug].name}
-                        </Link>
-                      ))}
-                    </p>
-                  </li>
-                ))}
-              </ul>
+
+        <div className="grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
+          <Reveal className="space-y-8">
+            {skills.map((g) => (
+              <div key={g.group.es}>
+                <h3 className="mb-3 text-sm font-bold">{t(g.group)}</h3>
+                <div className="flex flex-wrap gap-2" role="group" aria-label={t(g.group)}>
+                  {g.items.map(([name, used]) => {
+                    const on = name === active;
+                    return (
+                      <button key={name} onClick={() => setActive(name)} aria-pressed={on}
+                        className={`group inline-flex items-center gap-2 rounded-full py-2 pl-4 pr-2 text-sm font-semibold transition-[background-color,color,box-shadow] duration-200 active:scale-[0.98] ${on ? "bg-accent text-accent-ink" : "bg-paper text-ink ring-1 ring-line hover:ring-ink-faint"}`}>
+                        {name}
+                        <span className={`grid h-6 min-w-6 place-items-center rounded-full px-1.5 font-mono text-xs ${on ? "bg-accent-ink/15" : "bg-surface text-ink-faint ring-1 ring-line"}`}>
+                          {used.length}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+            <div className="space-y-2 border-t border-line pt-6 text-sm text-ink-soft">
+              <p><span className="font-semibold text-ink">{t({ es: "Idiomas", en: "Languages" })}:</span> {t({ es: "español nativo, inglés B2", en: "Spanish (native), English B2" })}</p>
+              <p><span className="font-semibold text-ink">{t({ es: "Aprendiendo ahora", en: "Learning now" })}:</span> {t({ es: "testing con Jest y React Testing Library, AWS", en: "testing with Jest and React Testing Library, AWS" })}</p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.1} className="lg:sticky lg:top-24 lg:self-start">
+            <p className="mb-4 text-ink-soft" aria-live="polite">
+              <span className="font-wide text-2xl font-extrabold text-ink">{active}</span>
+              <span className="ml-2">
+                {t({ es: `en ${refs.length} de ${projects.length} proyectos`, en: `in ${refs.length} of ${projects.length} projects` })}
+              </span>
+            </p>
+            <ul className="grid gap-2">
+              {projects.map((p) => {
+                const on = refs.includes(p.slug);
+                return (
+                  <motion.li key={p.slug} layout animate={{ opacity: on ? 1 : 0.38 }} transition={{ duration: 0.25 }}>
+                    <Link to={`/proyectos/${p.slug}`} tabIndex={on ? 0 : -1}
+                      className={`group flex items-center gap-4 rounded-xl p-2 pr-4 transition-[background-color,box-shadow] duration-200 ${on ? "bg-paper ring-1 ring-accent/60 hover:ring-accent" : "grayscale"}`}>
+                      {p.thumb ?? p.image ? (
+                        <img src={p.thumb ?? p.image} alt="" loading="lazy" className="h-12 w-20 shrink-0 rounded-lg object-cover object-top ring-1 ring-line" />
+                      ) : (
+                        <span className="grid h-12 w-20 shrink-0 place-items-center rounded-lg bg-accent/10 ring-1 ring-line"><Graph className="size-6 text-accent" aria-hidden /></span>
+                      )}
+                      <span className="min-w-0 flex-1">
+                        <span className="block font-semibold">{p.name}</span>
+                        <span className="block truncate text-sm text-ink-faint">{t(p.kind)}</span>
+                      </span>
+                      {on && <Arrow className="shrink-0 text-accent" />}
+                    </Link>
+                  </motion.li>
+                );
+              })}
+            </ul>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function About() {
+  const { t } = usePrefs();
+  return (
+    <section id="sobre-mi" className={`${wrap} grid gap-12 py-24 sm:py-32 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20`}>
+      <Reveal className="lg:sticky lg:top-24 lg:self-start">
+        <img src="/manuel.jpg" alt={me.name} loading="lazy"
+          className="aspect-[4/5] w-full max-w-md rounded-[20px] object-cover object-[50%_25%] ring-1 ring-line" />
+        <p className="mt-4 text-sm text-ink-faint">{t(me.offscreen)}</p>
+      </Reveal>
+      <div>
+        <SectionHead title={t({ es: "Aprendo construyendo y enseñando", en: "I learn by building and teaching" })} className="mb-8 sm:mb-8" />
+        <Reveal className="space-y-5 text-lg leading-relaxed text-ink-soft">
+          {t(me.about).map((para) => <p key={para} className="max-w-[60ch] text-pretty">{para}</p>)}
+        </Reveal>
+        <div className="mt-12 grid gap-8">
+          {principles.map((p, i) => (
+            <Reveal key={i} delay={i * 0.06} className="grid gap-2 border-l-[3px] border-accent pl-5">
+              <h3 className="font-wide text-xl font-bold tracking-tight">{t(p.title)}</h3>
+              <p className="max-w-[58ch] leading-relaxed text-ink-soft">{t(p.body)}</p>
             </Reveal>
           ))}
         </div>
-        <Reveal className="mt-10 flex flex-wrap gap-x-8 gap-y-2 text-sm text-ink-soft">
-          <span><b className="text-ink">{t({ es: "Idiomas", en: "Languages" })}:</b> {t({ es: "español (nativo), inglés B2", en: "Spanish (native), English B2" })}</span>
-          <span><b className="text-ink">{t({ es: "Aprendiendo ahora", en: "Learning now" })}:</b> {t({ es: "testing con Jest y React Testing Library, AWS", en: "testing with Jest and React Testing Library, AWS" })}</span>
-        </Reveal>
       </div>
     </section>
   );
 }
 
-function Principles() {
-  const { t } = usePrefs();
-  return (
-    <section className={`${wrap} py-24 sm:py-32`}>
-      <SectionHead index="03" title={t({ es: "Cómo trabajo", en: "How I work" })} />
-      <div className="grid gap-px overflow-hidden rounded-3xl border border-line bg-line md:grid-cols-3">
-        {principles.map((p, i) => (
-          <Reveal key={i} delay={i * 0.08} className="bg-paper p-7">
-            <span className="font-mono text-sm text-accent">0{i + 1}</span>
-            <h3 className="mt-3 font-display text-2xl font-semibold tracking-tight">{t(p.title)}</h3>
-            <p className="mt-3 text-ink-soft leading-relaxed">{t(p.body)}</p>
-          </Reveal>
-        ))}
-      </div>
-    </section>
-  );
-}
-
+// Trayectoria como línea de metro: se dibuja a medida que bajas.
 function Journey() {
   const { t } = usePrefs();
   const [showCerts, setShowCerts] = useState(false);
-  return (
-    <section id="trayectoria" className={`${wrap} pb-24 sm:pb-32`}>
-      <SectionHead index="04" title={t({ es: "Trayectoria", en: "Journey" })}
-        kicker={t({ es: "Lo más reciente primero.", en: "Most recent first." })} />
-      <ol className="relative ml-2 border-l border-line sm:ml-[8rem]">
-        {timeline.map((e, i) => (
-          <Reveal as="li" key={i} delay={i * 0.05} className="relative pb-10 pl-8 last:pb-0">
-            <span className={`absolute -left-[5px] top-2 size-[9px] rounded-full ring-4 ring-paper ${e.highlight ? "bg-accent" : "bg-ink-faint"}`} />
-            <p className="font-mono text-xs text-ink-faint sm:absolute sm:-left-[8rem] sm:top-1.5 sm:w-24 sm:text-right">{e.when}</p>
-            <h3 className="mt-1 font-display text-xl font-semibold sm:mt-0">{t(e.title)}</h3>
-            <p className="text-sm font-medium text-ink-soft">{t(e.org)}</p>
-            <p className="mt-2 max-w-2xl text-ink-soft leading-relaxed">{t(e.body)}</p>
-            {e.link?.startsWith("http") ? (
-              <a href={e.link} target="_blank" rel="noreferrer" className="group mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
-                {t({ es: "Verificar certificado", en: "Verify certificate" })} <Arrow up />
-              </a>
-            ) : e.link && (
-              <Link to={e.link} className="group mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
-                {t({ es: "Ver el caso", en: "See the case" })} <Arrow />
-              </Link>
-            )}
-          </Reveal>
-        ))}
-      </ol>
+  const line = useRef(null);
+  const { scrollYProgress } = useScroll({ target: line, offset: ["start 75%", "end 60%"] });
+  const grow = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
 
-      <Reveal className="mt-16 rounded-3xl border border-line bg-surface p-6 sm:p-8">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h3 className="font-display text-2xl font-semibold">{t({ es: "Certificaciones", en: "Certifications" })}</h3>
-            <p className="text-sm text-ink-soft">{certs.length} · {t({ es: "las que tienen enlace se pueden verificar con un clic", en: "linked ones can be verified in one click" })}</p>
-          </div>
-          <button onClick={() => setShowCerts((s) => !s)} aria-expanded={showCerts}
-            className="rounded-full border border-line px-4 py-2 text-sm hover:border-ink transition-colors">
-            {showCerts ? t({ es: "Ocultar", en: "Hide" }) : t({ es: "Ver todas", en: "Show all" })}
-          </button>
-        </div>
-        <ul className="mt-6 grid gap-x-8 sm:grid-cols-2">
-          {(showCerts ? certs : certs.slice(0, 4)).map((c) => (
-            <motion.li layout key={c.name} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              className="flex items-baseline justify-between gap-4 border-t border-line py-3">
-              <div>
-                <p className="font-medium leading-snug">{c.name}</p>
-                <p className="text-sm text-ink-faint">{c.by}{c.year && ` · ${c.year}`}</p>
-              </div>
-              {c.url && (
-                <a href={c.url} target="_blank" rel="noreferrer" className="group inline-flex shrink-0 items-center gap-1 font-mono text-xs text-accent">
-                  {t({ es: "verificar", en: "verify" })} <Arrow up />
+  return (
+    <section id="trayectoria" className="border-t border-line bg-surface">
+      <div className={`${wrap} py-24 sm:py-32`}>
+        <SectionHead title={t({ es: "Trayectoria", en: "Journey" })} kicker={t({ es: "De la estación más reciente a la primera.", en: "From the latest station back to the first." })} />
+
+        <ol ref={line} className="relative ml-1.5 sm:ml-[9.5rem]">
+          <span className="absolute left-0 top-2 bottom-2 w-[6px] -translate-x-1/2 rounded-full bg-line" aria-hidden />
+          <motion.span className="absolute left-0 top-2 bottom-2 w-[6px] -translate-x-1/2 origin-top rounded-full bg-accent" style={{ scaleY: grow }} aria-hidden />
+          {timeline.map((e, i) => (
+            <Reveal as="li" key={i} delay={0.04 * i} className="relative pb-12 pl-9 last:pb-0">
+              <span className={`absolute left-0 top-1.5 -translate-x-1/2 rounded-full border-[3.5px] border-accent ${e.highlight ? "size-6 bg-accent ring-4 ring-surface" : "size-5 bg-surface"}`} aria-hidden />
+              <p className="font-mono text-xs text-ink-faint sm:absolute sm:-left-[9.5rem] sm:top-2 sm:w-28 sm:text-right">{t(e.when)}</p>
+              <h3 className="mt-1 font-wide text-xl font-bold tracking-tight sm:mt-0">{t(e.title)}</h3>
+              <p className="text-sm font-semibold text-ink-soft">{t(e.org)}</p>
+              <p className="mt-2 max-w-[62ch] leading-relaxed text-ink-soft">{t(e.body)}</p>
+              {e.link?.startsWith("http") ? (
+                <a href={e.link} target="_blank" rel="noreferrer" className="group mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
+                  {t({ es: "Verificar certificado", en: "Verify certificate" })} <Arrow up />
                 </a>
+              ) : e.link && (
+                <Link to={e.link} className="group mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
+                  {t({ es: "Ver el caso", en: "See the case" })} <Arrow />
+                </Link>
               )}
-            </motion.li>
+            </Reveal>
           ))}
-        </ul>
-      </Reveal>
+        </ol>
+
+        <Reveal className="mt-20">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h3 className="font-wide text-2xl font-bold tracking-tight">{t({ es: "Certificaciones", en: "Certifications" })}</h3>
+              <p className="mt-1 text-sm text-ink-soft">{t({ es: "Las que tienen enlace se pueden verificar con un clic.", en: "Linked ones can be verified in one click." })}</p>
+            </div>
+            <button onClick={() => setShowCerts((s) => !s)} aria-expanded={showCerts}
+              className="rounded-full px-4 py-2 text-sm font-semibold ring-1 ring-line transition-colors hover:ring-ink active:scale-[0.98]">
+              {showCerts ? t({ es: "Ver menos", en: "Show less" }) : t({ es: `Ver las ${certs.length}`, en: `Show all ${certs.length}` })}
+            </button>
+          </div>
+          <ul className="mt-8 grid gap-4 sm:grid-cols-2">
+            {(showCerts ? certs : certs.slice(0, 4)).map((c) => (
+              <motion.li layout key={c.name} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                className="flex items-start justify-between gap-4 rounded-xl bg-paper p-4 ring-1 ring-line">
+                <div>
+                  <p className="font-semibold leading-snug">{c.name}</p>
+                  <p className="mt-0.5 text-sm text-ink-faint">{c.by}{c.year && `, ${c.year}`}</p>
+                </div>
+                {c.url && (
+                  <a href={c.url} target="_blank" rel="noreferrer" className="group inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-accent">
+                    {t({ es: "Verificar", en: "Verify" })} <Arrow up />
+                  </a>
+                )}
+              </motion.li>
+            ))}
+          </ul>
+        </Reveal>
+      </div>
     </section>
   );
 }
@@ -336,35 +403,29 @@ function Journey() {
 function Contact() {
   const { t, lang } = usePrefs();
   return (
-    <section id="contacto" className="bg-ink text-paper">
-      <div className={`${wrap} py-24 sm:py-32`}>
-        <Reveal>
-          <p className="label text-paper/60!">05 · {t({ es: "Contacto", en: "Contact" })}</p>
-          <h2 className="mt-4 max-w-4xl font-display text-[clamp(2.5rem,7vw,5rem)] font-semibold leading-[0.95] tracking-[-0.03em] text-balance">
-            {t({ es: "¿Tienes un equipo donde pueda aportar?", en: "Got a team where I can contribute?" })}
-          </h2>
-          <p className="mt-6 max-w-xl text-lg text-paper/70">
-            {t({
-              es: "Busco una práctica o un primer rol junior en front-end. Hablo español e inglés, y puedo empezar con una prueba técnica cuando quieras.",
-              en: "I'm looking for an internship or a first junior front-end role. I speak Spanish and English, and I'm happy to start with a technical test.",
-            })}
-          </p>
-        </Reveal>
-        <Reveal delay={0.1} className="mt-10 flex flex-wrap gap-3">
-          <a href={`mailto:${me.email}`} className="group inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 font-medium text-accent-ink hover:bg-paper hover:text-ink transition-colors">
-            {t({ es: "Escribirme", en: "Email me" })} <Arrow />
-          </a>
-          {[["LinkedIn", me.linkedin], ["GitHub", me.github]].map(([n, h]) => (
-            <a key={n} href={h} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-2 rounded-full border border-paper/25 px-6 py-3 hover:border-paper transition-colors">
-              {n} <Arrow up />
-            </a>
-          ))}
-          <a href={me.cv[lang]} download className="group inline-flex items-center gap-2 rounded-full border border-paper/25 px-6 py-3 hover:border-paper transition-colors">
-            CV · PDF
-          </a>
-        </Reveal>
-        <p className="mt-8 font-mono text-sm text-paper/60">{me.email}</p>
-      </div>
+    <section id="contacto" className={`${wrap} py-24 sm:py-36`}>
+      <Reveal>
+        <div className="flex items-center gap-0" aria-hidden>
+          <motion.span className="h-1.5 w-24 origin-left rounded-full bg-accent sm:w-40" initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: 0.9, ease }} />
+          <span className="size-6 rounded-full border-[3.5px] border-accent bg-paper" />
+        </div>
+        <h2 className="mt-8 max-w-4xl font-wide text-[clamp(2.4rem,6vw,4.6rem)] font-extrabold leading-[0.98] tracking-[-0.04em] text-balance">
+          {t({ es: "¿Tienes un equipo donde pueda aportar?", en: "Got a team where I can contribute?" })}
+        </h2>
+        <p className="mt-6 max-w-[52ch] text-lg leading-relaxed text-ink-soft">
+          {t({
+            es: "Busco una práctica o un primer rol junior en front-end. Hablo español e inglés, y me encantaría empezar con una prueba técnica.",
+            en: "I'm looking for an internship or a first junior front-end role. I speak Spanish and English, and I'd love to start with a technical test.",
+          })}
+        </p>
+      </Reveal>
+      <Reveal delay={0.1} className="mt-10 flex flex-wrap items-center gap-3">
+        <Button href={`mailto:${me.email}`} variant="accent">{t({ es: "Escribirme", en: "Email me" })} <Arrow /></Button>
+        <Button href={me.cv[lang]} variant="ghost" download>{t({ es: "Descargar CV", en: "Download CV" })}</Button>
+        <Button href={me.linkedin} variant="ghost" target="_blank" rel="noreferrer">LinkedIn <Arrow up /></Button>
+        <Button href={me.github} variant="ghost" target="_blank" rel="noreferrer">GitHub <Arrow up /></Button>
+      </Reveal>
+      <CopyEmail className="mt-8 text-ink-soft hover:text-ink" />
     </section>
   );
 }
