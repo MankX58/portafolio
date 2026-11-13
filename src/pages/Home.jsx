@@ -29,7 +29,7 @@ function Hero() {
   const { t, lang } = usePrefs();
   const lines = t(me.headline);
   return (
-    <section className={`${wrap} grid gap-12 pt-10 pb-20 sm:pt-16 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-12 lg:pt-20`}>
+    <section className={`${wrap} grid grid-cols-1 gap-12 pt-10 pb-20 sm:pt-16 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-12 lg:pt-20`}>
       <div>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }}
           className="flex items-center gap-4">
@@ -97,11 +97,11 @@ function Facts() {
 function ExtLinks({ p, className = "" }) {
   const { t } = usePrefs();
   return (
-    <div className={`relative z-10 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm ${className}`}>
-      <a href={p.live} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-1.5 font-semibold hover:text-accent">
+    <div className={`relative z-10 flex flex-wrap items-center gap-x-5 text-sm ${className}`}>
+      <a href={p.live} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-1.5 py-2.5 font-semibold hover:text-accent">
         {t({ es: "Ver en vivo", en: "Live site" })} <Arrow up />
       </a>
-      <a href={p.repo} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-1.5 text-ink-soft hover:text-ink">
+      <a href={p.repo} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-1.5 py-2.5 text-ink-soft hover:text-ink">
         {t({ es: "Código", en: "Code" })} <Arrow up />
       </a>
     </div>
@@ -118,24 +118,24 @@ function BigCard({ p, label, flip = false }) {
   const { t } = usePrefs();
   return (
     <Reveal>
-      <article className={`group relative grid gap-8 rounded-[20px] border border-line bg-surface p-5 transition-[border-color] duration-300 hover:border-ink-faint sm:p-8 lg:items-center ${flip ? "lg:grid-cols-[1.2fr_1fr]" : "lg:grid-cols-[1fr_1.2fr]"}`}>
+      <article className={`group relative grid gap-5 rounded-[20px] border border-line bg-surface p-4 sm:gap-8 transition-[border-color] duration-300 hover:border-ink-faint sm:p-8 lg:items-center ${flip ? "lg:grid-cols-[1.2fr_1fr]" : "lg:grid-cols-[1fr_1.2fr]"}`}>
         <div className={flip ? "lg:order-2" : ""}>
           <p className="text-sm font-semibold text-accent">{label}</p>
-          <h3 className="mt-2 font-wide text-4xl font-extrabold tracking-[-0.035em] sm:text-5xl">
+          <h3 className="mt-1 font-wide text-3xl font-extrabold tracking-[-0.035em] sm:mt-2 sm:text-5xl">
             <CaseLink p={p}>{p.name}</CaseLink>
           </h3>
           <p className="mt-1 text-sm text-ink-faint">{t(p.kind)}</p>
-          <p className="mt-5 max-w-[52ch] text-lg leading-relaxed text-ink-soft text-pretty">{t(p.tagline)}</p>
-          <dl className="mt-6 grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4">
-            {p.metrics.map((m) => (
-              <div key={m.value + m.label.es}>
+          <p className="mt-3 max-w-[52ch] leading-relaxed text-ink-soft text-pretty sm:mt-5 sm:text-lg">{t(p.tagline)}</p>
+          <dl className="mt-4 grid sm:mt-6 grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-4">
+            {p.metrics.map((m, k) => (
+              <div key={m.value + m.label.es} className={k > 1 ? "hidden sm:block" : ""}>
                 <dt className="font-wide text-2xl font-bold tracking-tight">{m.value}</dt>
                 <dd className="mt-0.5 text-xs leading-snug text-ink-faint">{t(m.label)}</dd>
               </div>
             ))}
           </dl>
-          <div className="mt-6 flex flex-wrap gap-1.5">{p.stack.slice(0, 6).map((s) => <Chip key={s}>{s}</Chip>)}</div>
-          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <div className="mt-4 flex flex-wrap gap-1.5 sm:mt-6">{p.stack.slice(0, 6).map((s, k) => <Chip key={s} className={k > 3 ? "hidden sm:inline-flex" : ""}>{s}</Chip>)}</div>
+          <div className="mt-4 flex sm:mt-7 flex-wrap items-center gap-x-6 gap-y-3">
             <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
               {t({ es: "Leer caso de estudio", en: "Read case study" })} <Arrow />
             </span>
@@ -159,42 +159,42 @@ function Work() {
   const rest = projects.filter((p) => !p.featured);
 
   return (
-    <section id="proyectos" className={`${wrap} py-24 sm:py-32`}>
+    <section id="proyectos" className={`${wrap} py-16 sm:py-32`}>
       <SectionHead title={t({ es: "Proyectos que alguien usa", en: "Projects someone uses" })}
         kicker={t({
           es: "Todos tienen demo pública, código abierto y un caso de estudio con el problema, lo que construí y por qué.",
           en: "All of them have a public demo, open code and a case study with the problem, what I built and why.",
         })} />
 
-      <div className="grid gap-6">
+      <div className="grid gap-4 sm:gap-6">
         <BigCard p={lead} label={t({ es: "En producción para un negocio real", en: "In production for a real business" })} />
         <BigCard p={second} label={t({ es: "Mi producto: lo uso todos los días", en: "My own product: I use it daily" })} flip />
       </div>
 
       {/* Bento: UdeMaps alto con su mapa, los otros dos apilados. */}
-      <div className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_1fr]">
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:mt-6 sm:gap-6 lg:grid-cols-[1.15fr_1fr]">
         <Reveal className="h-full">
           <article className="group relative flex h-full flex-col rounded-[20px] border border-line bg-surface p-5 transition-[border-color] duration-300 hover:border-ink-faint sm:p-8">
-            <div className="rounded-xl bg-paper p-3 ring-1 ring-line"><RouteGraph mini /></div>
-            <p className="mt-6 text-sm text-ink-faint">{t(udemaps.kind)}</p>
+            <div className="hidden rounded-xl bg-paper p-3 ring-1 ring-line sm:block"><RouteGraph mini /></div>
+            <p className="sm:mt-6 text-sm text-ink-faint">{t(udemaps.kind)}</p>
             <h3 className="mt-1 font-wide text-3xl font-extrabold tracking-[-0.03em]"><CaseLink p={udemaps}>{udemaps.name}</CaseLink></h3>
             <p className="mt-3 flex-1 leading-relaxed text-ink-soft">{t(udemaps.tagline)}</p>
-            <div className="mt-5 flex flex-wrap gap-1.5">{udemaps.stack.map((s) => <Chip key={s}>{s}</Chip>)}</div>
+            <div className="mt-4 flex flex-wrap gap-1.5 sm:mt-5">{udemaps.stack.map((s) => <Chip key={s}>{s}</Chip>)}</div>
             <ExtLinks p={udemaps} className="mt-6" />
           </article>
         </Reveal>
-        <div className="grid gap-6 lg:grid-rows-2">
+        <div className="grid gap-4 sm:gap-6 lg:grid-rows-2">
           {side.map((p, i) => (
             <Reveal key={p.slug} delay={0.08 * (i + 1)} className="h-full">
-              <article className="group relative grid h-full gap-5 rounded-[20px] border border-line bg-surface p-5 transition-[border-color] duration-300 hover:border-ink-faint sm:grid-cols-[0.9fr_1fr] sm:items-center sm:p-6">
+              <article className="group relative grid h-full grid-cols-[6.5rem_1fr] items-start gap-4 rounded-[20px] border border-line bg-surface p-4 transition-[border-color] duration-300 hover:border-ink-faint sm:grid-cols-[0.9fr_1fr] sm:items-center sm:gap-5 sm:p-6">
                 <div className="overflow-hidden rounded-xl">
                   <Shot src={p.thumb ?? p.image} alt={p.name} className="transition-transform duration-700 group-hover:scale-[1.03]" />
                 </div>
                 <div>
                   <p className="text-sm text-ink-faint">{t(p.kind)}</p>
                   <h3 className="mt-1 font-wide text-2xl font-extrabold tracking-[-0.03em]"><CaseLink p={p}>{p.name}</CaseLink></h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{t(p.tagline)}</p>
-                  <ExtLinks p={p} className="mt-4" />
+                  <p className="mt-1 text-sm leading-relaxed text-ink-soft sm:mt-2">{t(p.tagline)}</p>
+                  <ExtLinks p={p} className="sm:mt-4" />
                 </div>
               </article>
             </Reveal>
@@ -202,15 +202,15 @@ function Work() {
         </div>
       </div>
 
-      <Reveal className="mt-16">
+      <Reveal className="mt-12 sm:mt-16">
         <h3 className="mb-2 font-wide text-xl font-bold">{t({ es: "Más casos de estudio", en: "More case studies" })}</h3>
         <ul>
           {rest.map((p) => (
-            <li key={p.slug} className="group relative grid gap-2 border-b border-line py-6 sm:grid-cols-[14rem_1fr_auto] sm:items-center sm:gap-8">
-              <CaseLink p={p} className="font-wide text-2xl font-extrabold tracking-[-0.03em] transition-colors group-hover:text-accent">{p.name}</CaseLink>
+            <li key={p.slug} className="group relative grid gap-1 border-b border-line py-4 sm:grid-cols-[14rem_1fr_auto] sm:items-center sm:gap-8">
+              <CaseLink p={p} className="font-wide text-xl font-extrabold sm:text-2xl tracking-[-0.03em] transition-colors group-hover:text-accent">{p.name}</CaseLink>
               <div>
                 <p className="text-ink-soft">{t(p.tagline)}</p>
-                <p className="mt-1 font-mono text-xs text-ink-faint">{p.stack.join(", ")}</p>
+                <p className="mt-1 hidden font-mono text-xs text-ink-faint sm:block">{p.stack.join(", ")}</p>
               </div>
               <ExtLinks p={p} />
               {p.image && (
@@ -226,6 +226,7 @@ function Work() {
 }
 
 // Explorador: eliges una tecnología y se iluminan los proyectos donde se puede comprobar.
+// En móvil los resultados se abren justo debajo del grupo tocado; en PC van en la columna derecha.
 function Skills() {
   const { t } = usePrefs();
   const all = skills.flatMap((g) => g.items);
@@ -234,80 +235,97 @@ function Skills() {
 
   return (
     <section id="habilidades" className="border-y border-line bg-surface">
-      <div className={`${wrap} py-24 sm:py-32`}>
+      <div className={`${wrap} py-16 sm:py-32`}>
         <SectionHead title={t({ es: "Habilidades, con pruebas", en: "Skills, with receipts" })}
           kicker={t({
-            es: "Elige una tecnología y mira en qué proyectos la usé. Cada uno se puede abrir.",
-            en: "Pick a technology and see which projects use it. You can open each one.",
+            es: `${all.length} tecnologías. Elige una y mira en qué proyectos la usé.`,
+            en: `${all.length} technologies. Pick one and see which projects use it.`,
           })} />
 
-        <div className="grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
-          <Reveal className="space-y-8">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
+          <Reveal className="space-y-6 sm:space-y-8">
             {skills.map((g) => (
               <div key={g.group.es}>
-                <h3 className="mb-3 text-sm font-bold">{t(g.group)}</h3>
-                <div className="flex flex-wrap gap-2" role="group" aria-label={t(g.group)}>
+                <h3 className="mb-2.5 text-sm font-bold sm:mb-3">{t(g.group)}</h3>
+                <div className="flex flex-wrap gap-1.5 sm:gap-2" role="group" aria-label={t(g.group)}>
                   {g.items.map(([name, used]) => {
                     const on = name === active;
                     return (
                       <button key={name} onClick={() => setActive(name)} aria-pressed={on}
-                        className={`group inline-flex items-center gap-2 rounded-full py-2 pl-4 pr-2 text-sm font-semibold transition-[background-color,color,box-shadow] duration-200 active:scale-[0.98] ${on ? "bg-accent text-accent-ink" : "bg-paper text-ink ring-1 ring-line hover:ring-ink-faint"}`}>
+                        className={`group inline-flex items-center gap-1.5 rounded-full py-2 pl-3.5 pr-1.5 text-[13px] font-semibold sm:gap-2 sm:pl-4 sm:pr-2 sm:text-sm transition-[background-color,color,box-shadow] duration-200 active:scale-[0.98] ${on ? "bg-accent text-accent-ink" : "bg-paper text-ink ring-1 ring-line hover:ring-ink-faint"}`}>
                         {name}
-                        <span className={`grid h-6 min-w-6 place-items-center rounded-full px-1.5 font-mono text-xs ${on ? "bg-accent-ink/15" : "bg-surface text-ink-faint ring-1 ring-line"}`}>
+                        <span className={`grid h-5 min-w-5 place-items-center rounded-full px-1 font-mono text-[11px] sm:h-6 sm:min-w-6 sm:px-1.5 sm:text-xs ${on ? "bg-accent-ink/15" : "bg-surface text-ink-faint ring-1 ring-line"}`}>
                           {used.length}
                         </span>
                       </button>
                     );
                   })}
                 </div>
+                {g.items.some(([name]) => name === active) && (
+                  <motion.div key={active} initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}
+                    className="mt-3 rounded-2xl bg-paper p-3 ring-1 ring-accent/50 lg:hidden">
+                    <SkillMatches active={active} refs={refs} compact />
+                  </motion.div>
+                )}
               </div>
             ))}
-            <div className="space-y-2 border-t border-line pt-6 text-sm text-ink-soft">
-              <p><span className="font-semibold text-ink">{t({ es: "Idiomas", en: "Languages" })}:</span> {t({ es: "español nativo, inglés B2", en: "Spanish (native), English B2" })}</p>
-              <p><span className="font-semibold text-ink">{t({ es: "Aprendiendo ahora", en: "Learning now" })}:</span> {t({ es: "testing con Jest y React Testing Library, AWS", en: "testing with Jest and React Testing Library, AWS" })}</p>
-            </div>
           </Reveal>
 
-          <Reveal delay={0.1} className="lg:sticky lg:top-24 lg:self-start">
-            <p className="mb-4 text-ink-soft" aria-live="polite">
-              <span className="font-wide text-2xl font-extrabold text-ink">{active}</span>
-              <span className="ml-2">
-                {t({ es: `en ${refs.length} de ${projects.length} proyectos`, en: `in ${refs.length} of ${projects.length} projects` })}
-              </span>
-            </p>
-            <ul className="grid gap-2">
-              {projects.map((p) => {
-                const on = refs.includes(p.slug);
-                return (
-                  <motion.li key={p.slug} layout animate={{ opacity: on ? 1 : 0.38 }} transition={{ duration: 0.25 }}>
-                    <Link to={`/proyectos/${p.slug}`} tabIndex={on ? 0 : -1}
-                      className={`group flex items-center gap-4 rounded-xl p-2 pr-4 transition-[background-color,box-shadow] duration-200 ${on ? "bg-paper ring-1 ring-accent/60 hover:ring-accent" : "grayscale"}`}>
-                      {p.thumb ?? p.image ? (
-                        <img src={p.thumb ?? p.image} alt="" loading="lazy" className="h-12 w-20 shrink-0 rounded-lg object-cover object-top ring-1 ring-line" />
-                      ) : (
-                        <span className="grid h-12 w-20 shrink-0 place-items-center rounded-lg bg-accent/10 ring-1 ring-line"><Graph className="size-6 text-accent" aria-hidden /></span>
-                      )}
-                      <span className="min-w-0 flex-1">
-                        <span className="block font-semibold">{p.name}</span>
-                        <span className="block truncate text-sm text-ink-faint">{t(p.kind)}</span>
-                      </span>
-                      {on && <Arrow className="shrink-0 text-accent" />}
-                    </Link>
-                  </motion.li>
-                );
-              })}
-            </ul>
+          <Reveal delay={0.1} className="hidden lg:sticky lg:top-24 lg:block lg:self-start">
+            <SkillMatches active={active} refs={refs} />
           </Reveal>
+        </div>
+        <div className="mt-10 space-y-2 border-t border-line pt-6 text-sm text-ink-soft">
+          <p><span className="font-semibold text-ink">{t({ es: "Idiomas", en: "Languages" })}:</span> {t({ es: "español nativo, inglés B2", en: "Spanish (native), English B2" })}</p>
+          <p><span className="font-semibold text-ink">{t({ es: "Aprendiendo ahora", en: "Learning now" })}:</span> {t({ es: "testing con Jest y React Testing Library, AWS", en: "testing with Jest and React Testing Library, AWS" })}</p>
         </div>
       </div>
     </section>
   );
 }
 
+// compact: panel móvil, solo los proyectos que usan la tecnología. Sin compact: todos, atenuando los que no.
+function SkillMatches({ active, refs, compact = false }) {
+  const { t } = usePrefs();
+  const list = compact ? projects.filter((p) => refs.includes(p.slug)) : projects;
+  return (
+    <>
+      <p className={compact ? "mb-2 px-1 text-sm text-ink-soft" : "mb-4 text-ink-soft"} aria-live="polite">
+        <span className={`font-extrabold text-ink ${compact ? "" : "font-wide text-2xl"}`}>{active}</span>
+        <span className="ml-2">
+          {t({ es: `en ${refs.length} de ${projects.length} proyectos`, en: `in ${refs.length} of ${projects.length} projects` })}
+        </span>
+      </p>
+      <ul className={`grid grid-cols-1 ${compact ? "gap-1" : "gap-2"}`}>
+        {list.map((p) => {
+          const on = refs.includes(p.slug);
+          return (
+            <motion.li key={p.slug} layout={!compact} animate={{ opacity: on ? 1 : 0.38 }} transition={{ duration: 0.25 }}>
+              <Link to={`/proyectos/${p.slug}`} tabIndex={on ? 0 : -1}
+                className={`group flex items-center rounded-xl transition-[background-color,box-shadow] duration-200 ${compact ? "gap-3 p-1.5 pr-2 hover:bg-surface" : `gap-4 p-2 pr-4 ${on ? "bg-paper ring-1 ring-accent/60 hover:ring-accent" : "grayscale"}`}`}>
+                {p.thumb ?? p.image ? (
+                  <img src={p.thumb ?? p.image} alt="" loading="lazy" className={`shrink-0 rounded-lg object-cover object-top ring-1 ring-line ${compact ? "h-10 w-16" : "h-12 w-20"}`} />
+                ) : (
+                  <span className={`grid shrink-0 place-items-center rounded-lg bg-accent/10 ring-1 ring-line ${compact ? "h-10 w-16" : "h-12 w-20"}`}><Graph className="size-6 text-accent" aria-hidden /></span>
+                )}
+                <span className="min-w-0 flex-1">
+                  <span className="block font-semibold">{p.name}</span>
+                  <span className="block truncate text-sm text-ink-faint">{t(p.kind)}</span>
+                </span>
+                {on && <Arrow className="shrink-0 text-accent" />}
+              </Link>
+            </motion.li>
+          );
+        })}
+      </ul>
+    </>
+  );
+}
+
 function About() {
   const { t } = usePrefs();
   return (
-    <section id="sobre-mi" className={`${wrap} grid gap-12 py-24 sm:py-32 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20`}>
+    <section id="sobre-mi" className={`${wrap} grid grid-cols-1 gap-12 py-24 sm:py-32 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20`}>
       <Reveal className="lg:sticky lg:top-24 lg:self-start">
         <img src="/manuel.jpg" alt={me.name} loading="lazy"
           className="aspect-[4/5] w-full max-w-md rounded-[20px] object-cover object-[50%_25%] ring-1 ring-line" />
@@ -355,11 +373,11 @@ function Journey() {
               <p className="text-sm font-semibold text-ink-soft">{t(e.org)}</p>
               <p className="mt-2 max-w-[62ch] leading-relaxed text-ink-soft">{t(e.body)}</p>
               {e.link?.startsWith("http") ? (
-                <a href={e.link} target="_blank" rel="noreferrer" className="group mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
+                <a href={e.link} target="_blank" rel="noreferrer" className="group mt-1 inline-flex items-center gap-1.5 py-2.5 text-sm font-semibold text-accent">
                   {t({ es: "Verificar certificado", en: "Verify certificate" })} <Arrow up />
                 </a>
               ) : e.link && (
-                <Link to={e.link} className="group mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
+                <Link to={e.link} className="group mt-1 inline-flex items-center gap-1.5 py-2.5 text-sm font-semibold text-accent">
                   {t({ es: "Ver el caso", en: "See the case" })} <Arrow />
                 </Link>
               )}
@@ -374,7 +392,7 @@ function Journey() {
               <p className="mt-1 text-sm text-ink-soft">{t({ es: "Las que tienen enlace se pueden verificar con un clic.", en: "Linked ones can be verified in one click." })}</p>
             </div>
             <button onClick={() => setShowCerts((s) => !s)} aria-expanded={showCerts}
-              className="rounded-full px-4 py-2 text-sm font-semibold ring-1 ring-line transition-colors hover:ring-ink active:scale-[0.98]">
+              className="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-line transition-colors hover:ring-ink active:scale-[0.98]">
               {showCerts ? t({ es: "Ver menos", en: "Show less" }) : t({ es: `Ver las ${certs.length}`, en: `Show all ${certs.length}` })}
             </button>
           </div>
@@ -387,7 +405,7 @@ function Journey() {
                   <p className="mt-0.5 text-sm text-ink-faint">{c.by}{c.year && `, ${c.year}`}</p>
                 </div>
                 {c.url && (
-                  <a href={c.url} target="_blank" rel="noreferrer" className="group inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-accent">
+                  <a href={c.url} target="_blank" rel="noreferrer" className="group -my-2 inline-flex shrink-0 items-center gap-1 py-2.5 text-sm font-semibold text-accent">
                     {t({ es: "Verificar", en: "Verify" })} <Arrow up />
                   </a>
                 )}
@@ -425,7 +443,7 @@ function Contact() {
         <Button href={me.linkedin} variant="ghost" target="_blank" rel="noreferrer">LinkedIn <Arrow up /></Button>
         <Button href={me.github} variant="ghost" target="_blank" rel="noreferrer">GitHub <Arrow up /></Button>
       </Reveal>
-      <CopyEmail className="mt-8 text-ink-soft hover:text-ink" />
+      <CopyEmail className="mt-6 py-2.5 text-ink-soft hover:text-ink" />
     </section>
   );
 }

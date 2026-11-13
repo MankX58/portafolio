@@ -27,9 +27,9 @@ export function SectionHead({ title, kicker, className = "" }) {
   );
 }
 
-export function Chip({ children }) {
+export function Chip({ children, className = "" }) {
   return (
-    <span className="inline-flex items-center rounded-full bg-paper px-2.5 py-1 font-mono text-[0.7rem] text-ink-soft ring-1 ring-line">
+    <span className={`inline-flex items-center rounded-full bg-paper px-2.5 py-1 font-mono text-[0.7rem] text-ink-soft ring-1 ring-line ${className}`}>
       {children}
     </span>
   );

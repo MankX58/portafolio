@@ -61,7 +61,7 @@ export default function Layout({ children }) {
 }
 
 function Header({ openPalette }) {
-  const { t, lang, theme, toggleLang, toggleTheme } = usePrefs();
+  const { t, lang } = usePrefs();
   const [open, setOpen] = useState(false);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 30 });
@@ -69,14 +69,20 @@ function Header({ openPalette }) {
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    addEventListener("keydown", onKey);
+    return () => removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-line/70 bg-paper/80 backdrop-blur-md">
       <motion.div className="absolute inset-x-0 bottom-[-1px] h-px origin-left bg-accent" style={{ scaleX: progress }} />
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link to="/" className="group flex items-center gap-2.5 font-wide font-bold tracking-tight">
+        <Link to="/" className="group flex min-w-0 items-center gap-2.5 py-2 font-wide font-bold tracking-tight">
           <Mark />
-          <span>{me.short}</span>
+          <span className="truncate">{me.short}</span>
         </Link>
 
         <nav className="hidden items-center gap-1 text-sm lg:flex" aria-label="Principal">
@@ -87,18 +93,11 @@ function Header({ openPalette }) {
           ))}
         </nav>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1">
           <button onClick={openPalette} aria-label={t({ es: "Buscar", en: "Search" })} className="hidden items-center gap-2 rounded-full px-3 py-1.5 text-xs text-ink-faint ring-1 ring-line transition-colors hover:text-ink hover:ring-ink lg:inline-flex">
             <MagnifyingGlass className="size-3.5" aria-hidden /> <kbd className="font-mono">Ctrl K</kbd>
           </button>
-          <IconBtn onClick={toggleLang} label={t({ es: "Switch to English", en: "Cambiar a español" })}>
-            <span className="font-mono text-xs font-medium">{lang === "es" ? "EN" : "ES"}</span>
-          </IconBtn>
-          <IconBtn onClick={toggleTheme} label={t({ es: "Cambiar tema", en: "Toggle theme" })}>
-            <motion.span key={theme} initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} className="grid">
-              {theme === "dark" ? <Sun className="size-[18px]" aria-hidden /> : <Moon className="size-[18px]" aria-hidden />}
-            </motion.span>
-          </IconBtn>
+          <div className="hidden items-center gap-1 sm:flex"><Toggles /></div>
           <a href={me.cv[lang]} download className="hidden whitespace-nowrap rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper transition-colors hover:bg-accent hover:text-accent-ink sm:inline-flex">
             {t({ es: "Descargar CV", en: "Download CV" })}
           </a>
@@ -118,14 +117,33 @@ function Header({ openPalette }) {
                   {t(label)}
                 </Link>
               ))}
-              <a href={me.cv[lang]} download className="mt-3 rounded-full bg-ink px-4 py-3 text-center text-paper font-medium">
-                {t({ es: "Descargar CV", en: "Download CV" })}
-              </a>
+              <div className="mt-3 flex items-center gap-2">
+                <a href={me.cv[lang]} download className="flex-1 rounded-full bg-ink px-4 py-3 text-center text-paper font-medium">
+                  {t({ es: "Descargar CV", en: "Download CV" })}
+                </a>
+                <div className="flex items-center gap-1 sm:hidden"><Toggles /></div>
+              </div>
             </div>
           </motion.nav>
         )}
       </AnimatePresence>
     </header>
+  );
+}
+
+function Toggles() {
+  const { t, lang, theme, toggleLang, toggleTheme } = usePrefs();
+  return (
+    <>
+      <IconBtn onClick={toggleLang} label={t({ es: "Switch to English", en: "Cambiar a español" })}>
+        <span className="font-mono text-xs font-medium">{lang === "es" ? "EN" : "ES"}</span>
+      </IconBtn>
+      <IconBtn onClick={toggleTheme} label={t({ es: "Cambiar tema", en: "Toggle theme" })}>
+        <motion.span key={theme} initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} className="grid">
+          {theme === "dark" ? <Sun className="size-[18px]" aria-hidden /> : <Moon className="size-[18px]" aria-hidden />}
+        </motion.span>
+      </IconBtn>
+    </>
   );
 }
 
@@ -142,7 +160,7 @@ function Mark() {
 
 function IconBtn({ children, label, className = "", ...rest }) {
   return (
-    <button aria-label={label} title={label} className={`grid size-9 place-items-center rounded-full text-ink-soft hover:text-ink hover:bg-surface transition-colors ${className}`} {...rest}>
+    <button aria-label={label} title={label} className={`grid size-11 place-items-center rounded-full sm:size-10 text-ink-soft hover:text-ink hover:bg-surface transition-colors ${className}`} {...rest}>
       {children}
     </button>
   );
@@ -156,10 +174,10 @@ function Footer() {
         <p>
           © {new Date().getFullYear()} {me.name} · {t({ es: "Diseñado y programado por mí con React, Tailwind y React Router.", en: "Designed and coded by me with React, Tailwind and React Router." })}
         </p>
-        <div className="flex gap-4">
-          <a className="hover:text-ink" href={me.github} target="_blank" rel="noreferrer">GitHub</a>
-          <a className="hover:text-ink" href={me.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
-          <a className="hover:text-ink" href={`mailto:${me.email}`}>Email</a>
+        <div className="flex gap-6">
+          <a className="py-2.5 hover:text-ink" href={me.github} target="_blank" rel="noreferrer">GitHub</a>
+          <a className="py-2.5 hover:text-ink" href={me.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+          <a className="py-2.5 hover:text-ink" href={`mailto:${me.email}`}>Email</a>
         </div>
       </div>
     </footer>

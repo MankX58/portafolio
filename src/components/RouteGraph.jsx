@@ -61,7 +61,7 @@ export default function RouteGraph({ mini = false }) {
             tabIndex={clickable ? 0 : undefined} role={clickable ? "button" : undefined}
             aria-label={clickable ? `${t({ es: "Ruta a", en: "Route to" })} ${n.name}` : undefined}
             onKeyDown={(e) => clickable && (e.key === "Enter" || e.key === " ") && (e.preventDefault(), pick(i))}>
-            <circle cx={n.x} cy={n.y} r={15} fill="transparent" />
+            <circle cx={n.x} cy={n.y} r={18} fill="transparent" />
             <circle cx={n.x} cy={n.y} r={end ? 8 : 5.5} fill={end ? "var(--accent)" : "var(--surface)"}
               stroke={lit ? "var(--accent)" : visited.has(i) ? "var(--accent)" : "var(--ink-faint)"}
               strokeWidth={end ? 0 : 2.4} className="transition-[stroke] duration-200 group-hover:stroke-[var(--accent)]" />
@@ -89,7 +89,7 @@ export default function RouteGraph({ mini = false }) {
         <span className="flex rounded-full border border-line p-0.5 font-mono text-xs" role="group" aria-label={t({ es: "Algoritmo", en: "Algorithm" })}>
           {[["Dijkstra", false], ["A*", true]].map(([name, v]) => (
             <button key={name} onClick={() => setAstar(v)} aria-pressed={astar === v}
-              className={`rounded-full px-3 py-1 transition-colors ${astar === v ? "bg-ink text-paper" : "text-ink-soft hover:text-ink"}`}>
+              className={`rounded-full px-4 py-2.5 transition-colors sm:px-3 sm:py-1 ${astar === v ? "bg-ink text-paper" : "text-ink-soft hover:text-ink"}`}>
               {name}
             </button>
           ))}

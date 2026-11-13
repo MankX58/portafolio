@@ -23,11 +23,11 @@ export default function Project() {
 
   return (
     <article className="mx-auto max-w-6xl px-4 sm:px-6 pt-10 pb-24">
-      <Link to="/#proyectos" className="group inline-flex items-center gap-2 text-sm text-ink-soft hover:text-ink">
+      <Link to="/#proyectos" className="group -my-2.5 inline-flex items-center gap-2 py-2.5 text-sm text-ink-soft hover:text-ink">
         <Arrow className="rotate-180" /> {t({ es: "Todos los proyectos", en: "All projects" })}
       </Link>
 
-      <header className="mt-10 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-end">
+      <header className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-end">
         <div>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-sm font-semibold text-accent">{t(p.kind)}, {p.year}</motion.p>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
@@ -60,7 +60,7 @@ export default function Project() {
         </dl>
       )}
 
-      <div className="mt-16 grid gap-14 lg:grid-cols-[14rem_1fr]">
+      <div className="mt-16 grid grid-cols-1 gap-14 lg:grid-cols-[14rem_1fr]">
         <aside className="lg:sticky lg:top-24 lg:self-start">
           <p className="mb-3 text-sm font-bold">{t({ es: "Tecnologías", en: "Tech stack" })}</p>
           <div className="flex flex-wrap gap-1.5">{p.stack.map((s) => <Chip key={s}>{s}</Chip>)}</div>
